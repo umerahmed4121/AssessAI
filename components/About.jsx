@@ -13,7 +13,7 @@ const About = () => {
             <li>Insightful Analytics: Gain valuable insights into student performance with detailed analytics and reports, helping you make informed decisions for the future.</li>
         </ul>
         <h3 className='heading_3'>Why Choose AssessAI?</h3>
-        <p className='paragraph'>AssessAI is not just a platform; it's a revolution in education assessment. Whether you are an educator, institution, or organization, our platform adapts to your needs, streamlining the assessment process and enhancing the overall learning experience.</p>
+        <p className='paragraph'>AssessAI is not just a platform; it&#39s a revolution in education assessment. Whether you are an educator, institution, or organization, our platform adapts to your needs, streamlining the assessment process and enhancing the overall learning experience.</p>
         <h4 className='heading_4'>For Educators:</h4>
         <p className='paragraph ml-4'>Empower your teaching with AssessAI. Focus more on inspiring and guiding your students, while we handle the assessment workload.</p>
         <h4 className='heading_4'>For Institutions:</h4>
