@@ -117,11 +117,11 @@ const Navbar = () => {
                 <AnimatePresence>
                     {isMobileMenuOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
+                            initial={{ opacity: 0, y: -20}}
+                            animate={{ opacity: 1, y: 0}}
+                            exit={{ opacity: 0, y: -20}}
                             transition={{ duration: 0.3 }}
-                            className="md:hidden absolute top-full left-0 right-0 bg-gray-800 p-4"
+                            className="md:hidden absolute top-full left-0 right-0 bg-primary-transparent backdrop-blur p-4"
                         >
                             <ul className="flex flex-col space-y-2">
                                 {navLinks.map((link) => (
