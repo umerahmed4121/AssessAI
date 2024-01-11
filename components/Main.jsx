@@ -16,7 +16,7 @@ xl: 1280px
 const Main = () => {
   return (
     <div className='bg-[url("/assets/background-mobile.jpg")] sm:bg-[url("/assets/background.jpg")] w-full h-[94vh] sm:h-[100vh] bg-contain bg-bottom sm:bg-right-bottom bg-no-repeat'>
-        <div className='pt-[4vh] pl-[6vw] pr-[1vw] md:pt-[15vh]  lg:pt-[28vh] lg:pl-[10vh]'>
+        <div className='pt-[12vh] pl-[6vw] pr-[1vw] md:pt-[15vh]  lg:pt-[28vh] lg:pl-[10vh]'>
            <h1 className='text-3xl sm:text-6xl font-bold'>
             Welcome to AssessAI:
             <br />

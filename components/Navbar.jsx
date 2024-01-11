@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaBars } from 'react-icons/fa';
+
 
 const initialColor = {
     r: 15,
@@ -13,7 +15,7 @@ const finalColor = {
     r: 39,
     g: 28,
     b: 46,
-    a: 0.84
+    a: 1
 }
 
 const diffColor = {
@@ -49,11 +51,17 @@ const Navbar = () => {
                 const currentPosition = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const navbar = document.querySelector("#navbar");
-                if (scrollPosition == 0) {
-                    navbar.style.backgroundColor = `rgba(${initialColor.r},${initialColor.g},${initialColor.b},${initialColor.a})`
+                if (isMobileMenuOpen) {
+                    navbar.style.backgroundColor = `rgba(${finalColor.r},${finalColor.g},${finalColor.b},${finalColor.a})`
                 } else {
-                    navbar.style.backgroundColor =`rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
+                    navbar.style.backgroundColor = `rgba(${initialColor.r},${initialColor.g},${initialColor.b},${initialColor.a})`
+                    if (scrollPosition == 0) {
+                        navbar.style.backgroundColor = `rgba(${initialColor.r},${initialColor.g},${initialColor.b},${initialColor.a})`
+                    } else {
+                        navbar.style.backgroundColor =`rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
+                    }
                 }
+                
                 
                 
                 
@@ -74,7 +82,7 @@ const Navbar = () => {
             return () => {
                 window.removeEventListener('scroll', handleScroll);
             };
-        }, [scrollPosition]);
+        }, [scrollPosition, isMobileMenuOpen]);
 
     };
 
@@ -84,7 +92,7 @@ const Navbar = () => {
 
 
     return (
-        <motion.nav id='navbar' className={`backdrop-blur p-4 fixed top-0 w-full`}>
+        <motion.nav id='navbar' className={`p-4 fixed top-0 w-full`}>
 
             <div className="container mx-auto flex justify-between items-center">
                 {/* Logo or Branding */}
@@ -110,10 +118,11 @@ const Navbar = () => {
                     className="md:hidden text-white"
                     onClick={toggleMobileMenu}
                 >
-                    Menu
+                    <FaBars /> 
                 </button>
 
                 {/* Mobile Navigation */}
+                
                 <AnimatePresence>
                     {isMobileMenuOpen && (
                         <motion.div
@@ -121,9 +130,10 @@ const Navbar = () => {
                             animate={{ opacity: 1, y: 0}}
                             exit={{ opacity: 0, y: -20}}
                             transition={{ duration: 0.3 }}
-                            className="md:hidden absolute top-full left-0 right-0 bg-primary-transparent backdrop-blur p-4"
+                            
+                            className={`md:hidden absolute top-full left-0 right-0 bg-primary-light p-4`}
                         >
-                            <ul className="flex flex-col space-y-2">
+                            <ul className="flex flex-col items-end space-y-2">
                                 {navLinks.map((link) => (
                                     <motion.li
                                         key={link.id}
