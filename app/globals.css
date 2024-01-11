@@ -39,3 +39,6 @@ body {
   @apply text-xl mt-10 ;
 }
 
+.test {
+  color: #271c2ed5 ;
+}
