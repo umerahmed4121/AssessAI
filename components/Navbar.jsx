@@ -49,7 +49,13 @@ const Navbar = () => {
                 const currentPosition = window.scrollY;
                 const windowHeight = window.innerHeight;
                 const navbar = document.querySelector("#navbar");
-                navbar.style.backgroundColor =`rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
+                if (scrollPosition == 0) {
+                    navbar.style.backgroundColor = `rgba(${initialColor.r},${initialColor.g},${initialColor.b},${initialColor.a})`
+                } else {
+                    navbar.style.backgroundColor =`rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
+                }
+                
+                
                 
 
                 setScrollPosition(Math.round(currentPosition));
