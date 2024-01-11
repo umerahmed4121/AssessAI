@@ -23,21 +23,6 @@ const diffColor = {
     a: Math.abs(finalColor.a - initialColor.a)
 }
 
-// const color = {
-//     r: 15,
-//     g: 3,
-//     b: 23,
-//     a: 1
-// }
-
-// color.r = 15 - (scrollPosition / viewportHeight) * 39;
-// color.g = 3 - (scrollPosition / viewportHeight) * 28
-// color.b = 23 - (scrollPosition / viewportHeight) * 46;
-// color.a = 1 - (scrollPosition / viewportHeight) * 0.84;
-
-// `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
-
-
 const navLinks = [
     { id: 1, text: 'Home', href: '/' },
     { id: 2, text: 'About', href: '/about' },
@@ -54,7 +39,7 @@ const Navbar = () => {
     };
 
 
-    const backgroundColor = () => {
+    const BackgroundColor = () => {
         const [scrollPosition, setScrollPosition] = useState(0);
         const [viewportHeight, setViewportHeight] = useState(0);
 
