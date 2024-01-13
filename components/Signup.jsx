@@ -262,7 +262,7 @@ const Signup = () => {
                     />
 
                     <div className="text-sm text-center text-wrap mt-8">
-                        By clicking "Agree", you agree to our
+                        By clicking &quot;Agree&quot;, you agree to our
                         <Link href="#" target="_blank" className='px-1 underline text-secondary' >Terms</Link>
                         and have read our
                         <Link href="#" target="_blank" className='px-1 underline text-secondary'>
