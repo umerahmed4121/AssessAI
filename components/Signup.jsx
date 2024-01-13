@@ -12,10 +12,13 @@ import { FaApple } from 'react-icons/fa';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ColorRing } from 'react-loader-spinner';
+
 
 import { hashPassword, verifyPassword } from '@/utils/password';
 import { isValidDate, toDate } from '@/utils/date';
 
+import { colors } from '@/styles';
 
 const Signup = () => {
 
@@ -117,8 +120,13 @@ const Signup = () => {
                 toast("Account created successfully!", {
                     type: 'success'
                 })
-                router.push('/')
+                setTimeout(() => {router.push('/')}, 2000);
+                
 
+            } else if (res.status === 409) {
+                toast("Email already exist", {
+                    type: 'error'
+                })
             } else {
                 toast("Something went wrong!", {
                     type: 'error'
@@ -139,7 +147,7 @@ const Signup = () => {
     };
 
     return (
-        <div className="flex flex-col m-auto px-[8vw] sm:max-w-sm sm:px-10 items-center justify-center mt-[10vh]">
+        <div className="form_container">
             {!continueWithEmail || continueSignUp ?
                 <FaArrowLeft className="invisible text-2xl" /> :
                 <FaArrowLeft className="self-start text-2xl" onClick={() => setContinueWithEmail(false)} />
@@ -157,16 +165,19 @@ const Signup = () => {
                 pauseOnHover
                 theme="colored"
             />
+
             {!continueSignUp && (
                 <form onSubmit={handleContinueWithEmail} className='flex flex-col justify-center w-full'>
                     <motion.h1 className="text-center text-3xl font-bold pt-10 pb-6">Create your account</motion.h1>
-                    <input
+                    <input 
+                    
                         required
                         type="email"
+                        autoComplete='email'
                         placeholder="Email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="form_input"
+                        className="form_input mt-3"
                     />
 
 
@@ -270,10 +281,27 @@ const Signup = () => {
                         </Link>
                     </div>
 
-                    <motion.button
-                        onClick={handleSignUp}
-                        className='form_button mt-6'
-                    >Agree</motion.button>
+
+                    {submitting ? (
+                        <span className='self-center'>
+                            <ColorRing
+                                visible={submitting}
+                                height="80"
+                                width="80"
+                                ariaLabel="color-ring-loading"
+                                wrapperStyle={{}}
+                                wrapperClass="color-ring-wrapper"
+                                colors={[colors.secondaryLight, colors.secondary, colors.secondaryDark, colors.secondaryDark2, colors.secondaryDark3, colors.secondaryDark4]}
+                            />
+                        </span>
+
+                    ) : (
+                        <motion.button
+                            onClick={handleSignUp}
+                            className='form_button mt-6'
+                        >Agree</motion.button>
+                    )}
+
 
 
                 </form>

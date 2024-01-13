@@ -43,10 +43,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   @apply text-xl mt-10 ;
 }
 
+.form_container {
+  @apply flex flex-col m-auto px-[8vw] sm:max-w-sm sm:px-10 items-center justify-center mt-[10vh]
+}
+
 .form_input {
   border: 1px solid #6a5677;
-  @apply outline-none bg-transparent rounded w-full px-4 py-2 text-wrap;
+  @apply bg-transparent rounded w-full px-4 py-2 text-wrap;
 }
+
+
 .form_input:focus {
   border: 2px solid #6a5677;
   @apply outline-none rounded w-full px-4 py-2 text-wrap
