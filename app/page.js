@@ -4,10 +4,10 @@ import About from '@/components/About'
 
 export default function Home() {
   return (
-    <>     
-    <Main />
-      <div className='px-[10vw]'>
-   
+    <>
+      <Main />
+      <div className='sm:px-[10vw]'>
+
         <About />
       </div>
 

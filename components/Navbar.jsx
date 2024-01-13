@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars } from 'react-icons/fa';
+import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 
 
 const initialColor = {
@@ -17,14 +18,12 @@ const finalColor = {
     b: 46,
     a: 1
 }
-
 const diffColor = {
     r: Math.abs(finalColor.r - initialColor.r),
     g: Math.abs(finalColor.g - initialColor.g),
     b: Math.abs(finalColor.b - initialColor.b),
     a: Math.abs(finalColor.a - initialColor.a)
 }
-
 const navLinks = [
     { id: 1, text: 'Home', href: '/' },
     { id: 2, text: 'About', href: '/about' },
@@ -85,9 +84,8 @@ const Navbar = () => {
         }, [scrollPosition, isMobileMenuOpen]);
 
     };
-
-
     BackgroundColor();
+
 
 
 

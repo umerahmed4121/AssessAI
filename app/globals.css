@@ -23,6 +23,10 @@ body {
       rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .heading_2 {
   @apply text-4xl font-medium ;
 }
@@ -38,6 +42,25 @@ body {
 .paragraph {
   @apply text-xl mt-10 ;
 }
+
+.form_input {
+  border: 1px solid #6a5677;
+  @apply outline-none bg-transparent rounded w-full px-4 py-2 text-wrap;
+}
+.form_input:focus {
+  border: 2px solid #6a5677;
+  @apply outline-none rounded w-full px-4 py-2 text-wrap
+}
+
+.form_button {
+  @apply border-none rounded w-full px-4 py-2 bg-secondary hover:bg-secondary-dark text-white text-wrap font-bold
+}
+
+.form_button_2 {
+  border: 1px solid #6a5677;
+  @apply rounded w-full px-4 py-2 bg-transparent text-white text-wrap font-bold;
+}
+
 
 .test {
   color: #271c2ed5 ;
