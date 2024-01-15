@@ -13,7 +13,7 @@ const navLinks = [
     { id: 6, text: 'Help & Support', href: '/help-support' },
   ];
 
-const page = () => {
+const Page = () => {
 
     const { data: session } = useSession()
 
@@ -34,4 +34,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page
