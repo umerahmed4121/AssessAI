@@ -5,7 +5,7 @@ import Main from '@/components/Main'
 import About from '@/components/About'
 
 
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 import Navbar from '@/components/Navbar'
 import { useSession } from 'next-auth/react'
@@ -19,8 +19,9 @@ const navLinks = [
 
 export default function Home() {
   const { data: session } = useSession()
+  const router = useRouter()
   if (session?.user) {
-    redirect('/dashboard')
+    router.push('/dashboard')
   }
   return (
     <>

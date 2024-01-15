@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import CerdentialsProvider from 'next-auth/providers/credentials'
 
 import GoogleUser from "@/models/user-google";
+import GithubUser from "@/models/user-github";
 import User from "@/models/user";
 import { connectToDB } from "@/utils/database";
 
@@ -80,22 +81,32 @@ const handler = NextAuth({
             return session
 
         },
-        async signIn({user, account, profile, email, credentials}) {
+        async signIn({ user, account, profile, email, credentials }) {
             try {
+                console.log({ user, account, profile, email, credentials });
                 await connectToDB();
-                if(account?.provider === 'google') {
+                if (account?.provider === 'google') {
                     const userExist = await GoogleUser.findOne({ email: profile.email });
-                if (!userExist) {
-                    console.log(profile);
-                    await GoogleUser.create({
-                        name: profile.name,
-                        email: profile.email,
-                        picture: profile.picture,
-                    })
-                    return true
+                    if (!userExist) {
+                        await GoogleUser.create({
+                            name: profile.name,
+                            email: profile.email,
+                            picture: profile.picture,
+                        })
+                        return true
+                    }
+                } else if (account?.provider === 'github') {
+                    const userExist = await GithubUser.findOne({ email: profile.email });
+                    if (!userExist) {
+                        await GithubUser.create({
+                            name: user.name,
+                            email: user.email,
+                            picture: user.image,
+                        })
+                        return true
+                    }
                 }
-                }
-                
+
                 return true
             } catch (error) {
                 console.log(error);
@@ -106,4 +117,4 @@ const handler = NextAuth({
 
 })
 
-export { handler as GET, handler as POST}
+export { handler as GET, handler as POST }

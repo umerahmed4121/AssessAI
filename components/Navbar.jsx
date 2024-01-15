@@ -26,7 +26,7 @@ const diffColor = {
     a: Math.abs(finalColor.a - initialColor.a)
 }
 
-const Navbar = ({navLinks, dashboard}) => {
+const Navbar = ({ navLinks, dashboard }) => {
 
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -113,12 +113,22 @@ const Navbar = ({navLinks, dashboard}) => {
                             whileHover={{
                                 scale: 1.1,
                             }}
-                            className="text-white hover:text-secondary-light"
+                            className="text-white hover:text-secondary-light cursor-pointer"
                         >
                             <a href={link.href}>{link.text}</a>
                         </motion.li>
                     ))}
+                    {dashboard && (
+                        <motion.li
+                            key={"signout-desktop"}
+                            whileHover={{
+                                scale: 1.1,
+                            }}
+                            className="text-white hover:text-secondary-light cursor-pointer"
+                            onClick={() => signOut()}>Sign out</motion.li>
+                    )}
                 </ul>
+
 
                 {/* Mobile Navigation Toggle Button */}
                 <button
@@ -163,23 +173,6 @@ const Navbar = ({navLinks, dashboard}) => {
                                 {/* <motion.span className='w-full h-0.5 bg-white' /> */}
 
                                 {dashboard && (
-                                    <motion.button
-                                    variants={{
-                                        hidden: { opacity: 0 },
-                                        visible: { opacity: 1 },
-                                    }}
-                                    initial="hidden"
-                                    animate="visible"
-                                    transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
-
-                                    key={"login"}
-                                    whileHover={{ color: '#ff9900' }}
-                                    className="text-white text-right text-base py-2 cursor-pointer"
-                                    onClick={() => signOut()}>Sign out</motion.button>
-                                )}
-
-                                {!dashboard && (
-                                    <motion.div className='absolute bottom-[20%]'>
                                     <motion.li
                                         variants={{
                                             hidden: { opacity: 0 },
@@ -192,35 +185,52 @@ const Navbar = ({navLinks, dashboard}) => {
                                         key={"login"}
                                         whileHover={{ color: '#ff9900' }}
                                         className="text-white text-right text-base py-2 cursor-pointer"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        <Link href='/auth/login' >Log in</Link>
-
-
-                                    </motion.li>
-                                    <motion.li
-                                        variants={{
-                                            hidden: { opacity: 0 },
-                                            visible: { opacity: 1 },
-                                        }}
-                                        initial="hidden"
-                                        animate="visible"
-                                        transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
-
-                                        key={'signup'}
-                                        whileHover={{ color: '#ff9900' }}
-                                        className="text-white text-base py-2 cursor-pointer"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        <Link href='/auth/signup' >Sign up</Link>
-                                    </motion.li>
-                                </motion.div>
+                                        onClick={() => signOut()}>Sign out</motion.li>
                                 )}
 
-                                
+                                {!dashboard && (
+                                    <motion.div className='absolute bottom-[20%]'>
+                                        <motion.li
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
+
+                                            key={"login"}
+                                            whileHover={{ color: '#ff9900' }}
+                                            className="text-white text-right text-base py-2 cursor-pointer"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <Link href='/auth/login' >Log in</Link>
+
+
+                                        </motion.li>
+                                        <motion.li
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
+
+                                            key={'signup'}
+                                            whileHover={{ color: '#ff9900' }}
+                                            className="text-white text-base py-2 cursor-pointer"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <Link href='/auth/signup' >Sign up</Link>
+                                        </motion.li>
+                                    </motion.div>
+                                )}
+
+
 
                             </ul>
-                            
+
 
 
                         </motion.div>
