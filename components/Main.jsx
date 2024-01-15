@@ -24,6 +24,10 @@ const Main = () => {
             </h1> 
             <p className='mt-12 text-lg lg:text-2xl font-medium'>Unlock the Future of Learning with Automated Answer Script Assessment!</p>
             
+            <div className='w-[40%] sm:w-[20%] md:w-[16%] lg-[12%] mt-[16vh] px-4 py-2 bg-secondary rounded-md  text-center font-bold'>
+              Get started
+            </div>
+
         </div>
         
         

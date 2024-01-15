@@ -53,22 +53,21 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 }
             })
-            if(res.status===404){
+            if (res.status === 404) {
                 toast("User not found!", {
                     type: 'error'
                 })
                 setSubmitting(false)
                 return
-            }else if(res.status===401){
+            } else if (res.status === 401) {
                 toast("Incorrect password!", {
                     type: 'error'
                 })
                 setSubmitting(false)
                 return
-            } else if(res.status===200){
+            } else if (res.status === 200) {
                 const data = await res.json()
-
-                //
+                
                 toast("Login successful!", {
                     type: 'success'
                 })
@@ -76,14 +75,14 @@ const Login = () => {
                 setTimeout(() => {
                     router.push('/')
                 }, 2000);
-                
+
             }
-            
+
         } catch (error) {
             toast(error, {
                 type: 'error'
             })
-        } finally{
+        } finally {
             setSubmitting(false)
         }
     }
@@ -180,7 +179,7 @@ const Login = () => {
                         className="form_input mt-2.5"
                     />
                     <div className="mt-4"><Link className='text-secondary' href='/'>Forgot password?</Link></div>
-                    
+
 
                     {submitting ? (
                         <span className='self-center'>
@@ -204,7 +203,7 @@ const Login = () => {
 
                 </form>
             )}
-            
+
         </div>
     )
 

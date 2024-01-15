@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars } from 'react-icons/fa';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
-
+import Image from 'next/image'
 
 const initialColor = {
     r: 15,
@@ -145,6 +145,8 @@ const Navbar = () => {
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                {/* <Image src={"/assets/icons/google.svg"} width={25} height={25} className='rounded-full cursor-pointer' /> */}
             </div>
         </motion.nav>
     );

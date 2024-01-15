@@ -1,6 +1,7 @@
 import { connectToDB } from "@/utils/database";
 import User from "@/models/user";
 import { verifyPassword } from "@/utils/password";
+import { generateToken } from "@/utils/jwt";
 
 export const POST = async (req, res) => {
     const { email, password } = await req.json();
@@ -24,12 +25,14 @@ export const POST = async (req, res) => {
                 message: "Invalid password"
             });
         }
-        return new Response(JSON.stringify({
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                birthday: user.birthday
-        }), {
+        // Authentication successful
+        const token = generateToken({ 
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            birthday: user.birthday 
+        });
+        return new Response(JSON.stringify(token), {
             headers: { "Content-Type": "application/json" },
             status: 200,
             message: "Login successful"
