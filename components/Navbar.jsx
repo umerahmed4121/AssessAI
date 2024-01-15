@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars } from 'react-icons/fa';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const initialColor = {
     r: 15,
@@ -24,20 +25,21 @@ const diffColor = {
     b: Math.abs(finalColor.b - initialColor.b),
     a: Math.abs(finalColor.a - initialColor.a)
 }
-const navLinks = [
-    { id: 1, text: 'Home', href: '/' },
-    { id: 2, text: 'About', href: '/about' },
-    { id: 3, text: 'Services', href: '/services' },
-    { id: 4, text: 'Contact', href: '/contact' },
-];
 
-const Navbar = () => {
+const Navbar = ({navLinks, dashboard}) => {
 
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!isMobileMenuOpen);
     };
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+
+        }
+
+    }, [isMobileMenuOpen])
 
 
     const BackgroundColor = () => {
@@ -57,13 +59,13 @@ const Navbar = () => {
                     if (scrollPosition == 0) {
                         navbar.style.backgroundColor = `rgba(${initialColor.r},${initialColor.g},${initialColor.b},${initialColor.a})`
                     } else {
-                        navbar.style.backgroundColor =`rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
+                        navbar.style.backgroundColor = `rgba(${scrollPosition >= viewportHeight ? finalColor.r : Math.round(initialColor.r + ((scrollPosition / viewportHeight) * diffColor.r))},${scrollPosition >= viewportHeight ? finalColor.g : Math.round(initialColor.g + ((scrollPosition / viewportHeight) * diffColor.g))},${scrollPosition >= viewportHeight ? finalColor.b : Math.round(initialColor.b + ((scrollPosition / viewportHeight) * diffColor.b))},${scrollPosition >= viewportHeight ? finalColor.a : (initialColor.a - ((scrollPosition / viewportHeight) * diffColor.a)).toFixed(2)})`
                     }
                 }
-                
-                
-                
-                
+
+
+
+
 
                 setScrollPosition(Math.round(currentPosition));
                 setViewportHeight(windowHeight);
@@ -92,6 +94,11 @@ const Navbar = () => {
     return (
         <motion.nav id='navbar' className={`p-4 fixed top-0 w-full`}>
 
+            {isMobileMenuOpen && (
+                <div className='absolute top-[70%] left-0 right-0 w-screen h-screen bg-transparent backdrop-blur z-10'></div>
+            )}
+
+
             <div className="container mx-auto flex justify-between items-center">
                 {/* Logo or Branding */}
                 <a href="/" className="text-white text-xl font-bold">
@@ -103,8 +110,10 @@ const Navbar = () => {
                     {navLinks.map((link) => (
                         <motion.li
                             key={link.id}
-                            whileHover={{ color: '#ff9900' }}
-                            className="text-white"
+                            whileHover={{
+                                scale: 1.1,
+                            }}
+                            className="text-white hover:text-secondary-light"
                         >
                             <a href={link.href}>{link.text}</a>
                         </motion.li>
@@ -113,35 +122,107 @@ const Navbar = () => {
 
                 {/* Mobile Navigation Toggle Button */}
                 <button
-                    className="md:hidden text-white"
+                    className="md:hidden text-white z-20"
                     onClick={toggleMobileMenu}
                 >
-                    <FaBars /> 
+                    <FaBars />
                 </button>
 
                 {/* Mobile Navigation */}
-                
+
                 <AnimatePresence>
                     {isMobileMenuOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: -20}}
-                            animate={{ opacity: 1, y: 0}}
-                            exit={{ opacity: 0, y: -20}}
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
-                            
-                            className={`md:hidden absolute top-full left-0 right-0 bg-primary-light p-4`}
+
+                            className={`md:hidden w-[70%] h-screen absolute top-full right-0 bg-primary-light p-6 z-20`}
                         >
                             <ul className="flex flex-col items-end space-y-2">
-                                {navLinks.map((link) => (
+                                {navLinks.map((link, index) => (
                                     <motion.li
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: index * 0.25, ease: "easeInOut" }}
+
                                         key={link.id}
                                         whileHover={{ color: '#ff9900' }}
-                                        className="text-white"
+                                        className="text-white text-base py-2"
+                                        onClick={() => setMobileMenuOpen(false)}
                                     >
-                                        <a href={link.href}>{link.text}</a>
+                                        <Link href={link.href}>{link.text}</Link>
                                     </motion.li>
                                 ))}
+
+                                {/* <motion.span className='w-full h-0.5 bg-white' /> */}
+
+                                {dashboard && (
+                                    <motion.button
+                                    variants={{
+                                        hidden: { opacity: 0 },
+                                        visible: { opacity: 1 },
+                                    }}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
+
+                                    key={"login"}
+                                    whileHover={{ color: '#ff9900' }}
+                                    className="text-white text-right text-base py-2 cursor-pointer"
+                                    onClick={() => signOut()}>Sign out</motion.button>
+                                )}
+
+                                {!dashboard && (
+                                    <motion.div className='absolute bottom-[20%]'>
+                                    <motion.li
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
+
+                                        key={"login"}
+                                        whileHover={{ color: '#ff9900' }}
+                                        className="text-white text-right text-base py-2 cursor-pointer"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Link href='/auth/login' >Log in</Link>
+
+
+                                    </motion.li>
+                                    <motion.li
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
+
+                                        key={'signup'}
+                                        whileHover={{ color: '#ff9900' }}
+                                        className="text-white text-base py-2 cursor-pointer"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Link href='/auth/signup' >Sign up</Link>
+                                    </motion.li>
+                                </motion.div>
+                                )}
+
+                                
+
                             </ul>
+                            
+
+
                         </motion.div>
                     )}
                 </AnimatePresence>

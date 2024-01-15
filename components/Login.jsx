@@ -1,10 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 
-import { FaArrowLeft, FaApple } from 'react-icons/fa';
+import { signIn, signOut, useSession, getProviders } from "next-auth/react"
+
+import { FaArrowLeft, FaGithub } from 'react-icons/fa';
 import { GoogleIcon } from '@/icons';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,6 +19,21 @@ import { colors } from '@/styles';
 
 const Login = () => {
     const router = useRouter()
+    const { data: session } = useSession()
+
+
+    const [providers, setProviders] = useState(null)
+
+    useEffect(() => {
+
+        const setMyProviders = async () => {
+            const response = await getProviders();
+            setProviders(response)
+        }
+        setMyProviders()
+
+    }, [])
+
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -67,7 +84,8 @@ const Login = () => {
                 return
             } else if (res.status === 200) {
                 const data = await res.json()
-                
+
+                console.log(data);
                 toast("Login successful!", {
                     type: 'success'
                 })
@@ -145,22 +163,39 @@ const Login = () => {
                     </div>
                     {/* Continue with Google */}
                     {/* https://youtu.be/wm5gMKuwSYk?t=4842 https://youtu.be/wm5gMKuwSYk */}
-                    <button
-                        onClick={handleGoogleSignup}
-                        className="form_button_2"
-                    >
-                        <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
+                    {providers &&
+                        Object.values(providers).map((provider) => {
+                            if (provider.id === 'google') {
+                                return (
+                                    <button
+                                        type="button"
+                                        key={provider.name}
+                                        onClick={() => signIn(provider.id, { callbackUrl: '/dashboard' })}
+                                        className="form_button_2"
+                                    >
+                                        <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
 
-                    </button>
+                                    </button>
+                                )
+                            } else if (provider.id === 'github') {
+                                return (
+                                    <button
+                                        type="button"
+                                        key={provider.name}
+                                        onClick={() => signIn(provider.id, { callbackUrl: '/dashboard' })}
+                                        className="form_button_2 mt-3"
+                                    >
+                                        <span className='flex flex-row align-center justify-center gap-2'><FaGithub className='self-center w-5 h-5' />Continue with Github</span>
 
-                    {/* Continue with Apple */}
-                    <button
-                        onClick={handleGoogleSignup}
-                        className="form_button_2 mt-2"
-                    >
-                        <span className='flex flex-row align-center justify-center gap-2'><FaApple className='self-center w-5 h-5' />Continue with Apple</span>
+                                    </button>
+                                )
+                            }
+                        
+                        })
+                    }
 
-                    </button>
+
+                    
                 </>
 
             )}

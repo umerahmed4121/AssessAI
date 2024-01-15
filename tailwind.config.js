@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -12,6 +13,7 @@ module.exports = {
         'primary-light': '#271c2e',
         'primary-transparent': '#271c2ed5',
         'secondary': '#d2583a',
+        'secondary-light': '#db7961',
         'secondary-dark': '#bd4f33',
         'secondary-dark-2': '#a8462e',
         'secondary-dark-3': '#933e28',
@@ -26,6 +28,12 @@ module.exports = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
+    screens:{
+      '-3xs': '375px',
+      '-2xs': '425px',
+      'xs': '500px',
+      ...defaultTheme.screens,
+    }
   },
   plugins: [],
 }

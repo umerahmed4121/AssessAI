@@ -1,7 +1,10 @@
+"use server"
+
 import { connectToDB } from "@/utils/database";
 import User from "@/models/user";
 import { verifyPassword } from "@/utils/password";
 import { generateToken } from "@/utils/jwt";
+import { cookies } from 'next/headers'
 
 export const POST = async (req, res) => {
     const { email, password } = await req.json();
@@ -32,6 +35,7 @@ export const POST = async (req, res) => {
             email: user.email,
             birthday: user.birthday 
         });
+        cookies().set('token',token)
         return new Response(JSON.stringify(token), {
             headers: { "Content-Type": "application/json" },
             status: 200,
