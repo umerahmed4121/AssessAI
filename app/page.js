@@ -18,11 +18,7 @@ const navLinks = [
 ];
 
 export default function Home() {
-  const { data: session } = useSession()
-  const router = useRouter()
-  if (session?.user) {
-    router.push('/dashboard')
-  }
+
   return (
     <>
       <Navbar navLinks={navLinks} />

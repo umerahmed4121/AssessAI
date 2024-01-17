@@ -6,7 +6,7 @@ import Link from "next/link"
 
 import { motion } from "framer-motion"
 
-import { signIn, signOut, useSession, getProviders } from "next-auth/react"
+import { signIn, useSession, getProviders } from "next-auth/react"
 
 import { FaArrowLeft, FaGithub } from 'react-icons/fa';
 import { GoogleIcon } from '@/icons';
@@ -60,13 +60,12 @@ const Login = () => {
         e.preventDefault()
         setSubmitting(true)
         const { email, password } = formData
-        const hashedPassword = await hashPassword(password)
         try {
             const res = await fetch('/api/auth/email/login', {
                 method: 'POST',
                 body: JSON.stringify({
                     email: email,
-                    password: hashedPassword
+                    password: password
                 }),
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,7 +92,7 @@ const Login = () => {
                 })
                 setSubmitting(false)
                 setTimeout(() => {
-                    router.push('/')
+                    router.push('/dashboard')
                 }, 2000);
 
             }
@@ -253,7 +252,7 @@ const Login = () => {
 
                                         type="button"
                                         key={provider.name}
-                                        onClick={() => signIn(provider.id, { callbackUrl: '/dashboard' })}
+                                        onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
                                         className="form_button_2 mt-3"
                                     >
                                         <span className='flex flex-row align-center justify-center gap-2'><FaGithub className='self-center w-5 h-5' />Continue with Github</span>

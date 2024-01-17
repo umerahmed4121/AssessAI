@@ -21,7 +21,8 @@ export const POST = async (req, res) => {
                 }
             });
         }
-        if (!verifyPassword(password, user.password)) {
+        const match = await verifyPassword(password, user.password);
+        if (!match) {
             return new Response(JSON.stringify(user), {
                 headers: { "Content-Type": "application/json" },
                 status: 401,
@@ -29,13 +30,15 @@ export const POST = async (req, res) => {
             });
         }
         // Authentication successful
-        const token = generateToken({ 
+        const token = await generateToken({ 
             id: user._id,
             name: user.name,
             email: user.email,
             birthday: user.birthday 
         });
-        cookies().set('token',token)
+        cookies().set('token',token, {
+            expires: new Date(Date.now() + 60 * 60 * 24 * 1000) // 24 hours
+        })
         return new Response(JSON.stringify(token), {
             headers: { "Content-Type": "application/json" },
             status: 200,

@@ -65,10 +65,17 @@ const handler = NextAuth({
                 return false
             }
         },
-    },redirect: {
-        signIn: '/dashboard',
+        async redirect({ url, baseUrl }) {
+            return url.startsWith(baseUrl) ? url : baseUrl
+        },
+        
+    },
+    pages: {
+        signIn: '/auth/login',
         signOut: '/',
         error: '/auth/error',
+        verifyRequest: '/auth/verify-request',
+        newUser: '/auth/new-user',
     },
 
 })

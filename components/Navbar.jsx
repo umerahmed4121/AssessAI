@@ -6,6 +6,8 @@ import { FaBars } from 'react-icons/fa';
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ColorRing } from 'react-loader-spinner'
+import { colors } from '@/styles'
 
 const initialColor = {
     r: 15,
@@ -29,6 +31,7 @@ const diffColor = {
 const Navbar = ({ navLinks, dashboard }) => {
 
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!isMobileMenuOpen);
@@ -94,8 +97,24 @@ const Navbar = ({ navLinks, dashboard }) => {
     return (
         <motion.nav id='navbar' className={`p-4 fixed top-0 w-full`}>
 
-            {isMobileMenuOpen && (
-                <div className='absolute top-[70%] left-0 right-0 w-screen h-screen bg-transparent backdrop-blur z-10'></div>
+            {(isMobileMenuOpen || loading) && (
+                <div className='absolute top-[70%] left-0 right-0 w-screen h-screen bg-transparent backdrop-blur z-10'>
+                    {loading && (
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <ColorRing
+                        visible={loading}
+                        height="80"
+                        width="80"
+                        ariaLabel="color-ring-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="color-ring-wrapper"
+                        colors={[colors.secondaryLight, colors.secondary, colors.secondaryDark, colors.secondaryDark2, colors.secondaryDark3, colors.secondaryDark4]}
+                        
+                    />
+                        </div>
+                        
+                    )}
+                </div>
             )}
 
 
@@ -125,7 +144,13 @@ const Navbar = ({ navLinks, dashboard }) => {
                                 scale: 1.1,
                             }}
                             className="text-white hover:text-secondary-light cursor-pointer"
-                            onClick={() => signOut()}>Sign out</motion.li>
+                            onClick={() => {
+                                setLoading(true)
+                                setTimeout(() => {
+                                    signOut({ callbackUrl: 'http://localhost:3000/' })
+                                }, 2000)
+                                
+                            }}>Sign out</motion.li>
                     )}
                 </ul>
 
@@ -185,7 +210,7 @@ const Navbar = ({ navLinks, dashboard }) => {
                                         key={"login"}
                                         whileHover={{ color: '#ff9900' }}
                                         className="text-white text-right text-base py-2 cursor-pointer"
-                                        onClick={() => signOut()}>Sign out</motion.li>
+                                        onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>Sign out</motion.li>
                                 )}
 
                                 {!dashboard && (
