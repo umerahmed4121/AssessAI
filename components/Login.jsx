@@ -196,19 +196,7 @@ const Login = () => {
                         <Link className='pl-2 text-secondary' href='/auth/signup'>Sign up</Link>
                     </motion.span>
 
-                    <motion.div
-                        variants={{
-                            hidden: { opacity: 0 },
-                            visible: { opacity: 1 },
-                        }}
-                        initial="hidden"
-                        animate="visible"
-                        transition={{ duration: 0.5, delay: 1.25, ease: "easeInOut" }}
-                        className='flex flex-row justify-center items-center gap-2 w-full py-6 px-1'>
-                        <div className='w-full h-[1px] rounded-full bg-white'></div>
-                        <span className='text-sm'>OR</span>
-                        <div className='w-full h-[1px] rounded-full bg-white'></div>
-                    </motion.div>
+
 
 
                     {/* Continue with Google */}
@@ -217,23 +205,40 @@ const Login = () => {
                         Object.values(providers).map((provider) => {
                             if (provider.id === 'google') {
                                 return (
-                                    <motion.button
-                                        variants={{
-                                            hidden: { opacity: 0 },
-                                            visible: { opacity: 1 },
-                                        }}
-                                        initial="hidden"
-                                        animate="visible"
-                                        transition={{ duration: 0.5, delay: 1.5, ease: "easeInOut" }}
+                                    <>
+                                        <motion.div
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: 1.25, ease: "easeInOut" }}
+                                            className='flex flex-row justify-center items-center gap-2 w-full py-6 px-1'>
+                                            <div className='w-full h-[1px] rounded-full bg-white'></div>
+                                            <span className='text-sm'>OR</span>
+                                            <div className='w-full h-[1px] rounded-full bg-white'></div>
+                                        </motion.div>
 
-                                        type="button"
-                                        key={provider.name}
-                                        onClick={() => signIn(provider.id, { callbackUrl: '/dashboard' })}
-                                        className="form_button_2"
-                                    >
-                                        <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
+                                        <motion.button
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: 1.5, ease: "easeInOut" }}
 
-                                    </motion.button>
+                                            type="button"
+                                            key={provider.name}
+                                            onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
+                                            className="form_button_2"
+                                        >
+                                            <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
+
+                                        </motion.button>
+                                    </>
+
                                 )
                             } else if (provider.id === 'github') {
                                 return (
