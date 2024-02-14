@@ -16,10 +16,11 @@ const initialColor = {
     a: 1
 }
 const finalColor = {
+    //#271c2ee6
     r: 39,
     g: 28,
     b: 46,
-    a: 1
+    a: 0.9
 }
 const diffColor = {
     r: Math.abs(finalColor.r - initialColor.r),
@@ -95,34 +96,21 @@ const Navbar = ({ navLinks, dashboard }) => {
 
 
     return (
-        <motion.nav id='navbar' className={`p-4 fixed top-0 w-full`}>
+        <motion.nav id='navbar' className="p-4 fixed top-0 w-full h-[60px] my_blur">
 
             {(isMobileMenuOpen || loading) && (
-                <div className='absolute top-[70%] left-0 right-0 w-screen h-screen bg-transparent backdrop-blur z-10'>
-                    {loading && (
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                            <ColorRing
-                        visible={loading}
-                        height="80"
-                        width="80"
-                        ariaLabel="color-ring-loading"
-                        wrapperStyle={{}}
-                        wrapperClass="color-ring-wrapper"
-                        colors={[colors.secondaryLight, colors.secondary, colors.secondaryDark, colors.secondaryDark2, colors.secondaryDark3, colors.secondaryDark4]}
-                        
-                    />
-                        </div>
-                        
-                    )}
+                <div className='absolute top-[60px] left-0 right-0 w-screen h-screen bg-[#00000080] z-10'>
+
                 </div>
             )}
 
 
             <div className="container mx-auto flex justify-between items-center">
                 {/* Logo or Branding */}
-                <a href="/" className="text-white text-xl font-bold">
-                    AssessAI
-                </a>
+                <Link href="/" className="flex flex-row gap-2 text-white text-xl font-bold">
+                    <Image src="/assets/logo.png" width={30} height={30} alt='AssessAi'/>
+                    AssessAi
+                </Link>
 
                 {/* Desktop Navigation */}
                 <ul className="hidden md:flex space-x-4">
@@ -137,21 +125,7 @@ const Navbar = ({ navLinks, dashboard }) => {
                             <a href={link.href}>{link.text}</a>
                         </motion.li>
                     ))}
-                    {dashboard && (
-                        <motion.li
-                            key={"signout-desktop"}
-                            whileHover={{
-                                scale: 1.1,
-                            }}
-                            className="text-white hover:text-secondary-light cursor-pointer"
-                            onClick={() => {
-                                setLoading(true)
-                                setTimeout(() => {
-                                    signOut({ callbackUrl: 'http://localhost:3000/' })
-                                }, 2000)
-                                
-                            }}>Sign out</motion.li>
-                    )}
+                    
                 </ul>
 
 
@@ -197,24 +171,9 @@ const Navbar = ({ navLinks, dashboard }) => {
 
                                 {/* <motion.span className='w-full h-0.5 bg-white' /> */}
 
-                                {dashboard && (
-                                    <motion.li
-                                        variants={{
-                                            hidden: { opacity: 0 },
-                                            visible: { opacity: 1 },
-                                        }}
-                                        initial="hidden"
-                                        animate="visible"
-                                        transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
+                                
 
-                                        key={"login"}
-                                        whileHover={{ color: '#ff9900' }}
-                                        className="text-white text-right text-base py-2 cursor-pointer"
-                                        onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>Sign out</motion.li>
-                                )}
-
-                                {!dashboard && (
-                                    <motion.div className='absolute bottom-[20%]'>
+                                <motion.div className='absolute bottom-[20%]'>
                                         <motion.li
                                             variants={{
                                                 hidden: { opacity: 0 },
@@ -250,7 +209,6 @@ const Navbar = ({ navLinks, dashboard }) => {
                                             <Link href='/auth/signup' >Sign up</Link>
                                         </motion.li>
                                     </motion.div>
-                                )}
 
 
 

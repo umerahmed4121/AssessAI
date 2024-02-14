@@ -8,11 +8,22 @@ import { cookies } from 'next/headers'
 
 export const POST = async (req, res) => {
     const { email, password } = await req.json();
+    
 
     try {
         await connectToDB();
         const user = await User.findOne({ email });
+        
         if (!user) {
+            return new Response(JSON.stringify(user), {
+                headers: { "Content-Type": "application/json" },
+                status: 404,
+                body:{
+                    message: "User not found"
+                }
+            });
+        }
+        if(user.provider !== 'email'){
             return new Response(JSON.stringify(user), {
                 headers: { "Content-Type": "application/json" },
                 status: 404,
@@ -34,12 +45,24 @@ export const POST = async (req, res) => {
             id: user._id,
             name: user.name,
             email: user.email,
+            role: user.role,
             birthday: user.birthday 
         });
         cookies().set('token',token, {
             expires: new Date(Date.now() + 60 * 60 * 24 * 1000) // 24 hours
         })
-        return new Response(JSON.stringify(token), {
+        return new Response(JSON.stringify(
+            { 
+                token: token,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    birthday: user.birthday 
+                }
+            }
+        ), {
             headers: { "Content-Type": "application/json" },
             status: 200,
             message: "Login successful"

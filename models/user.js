@@ -17,15 +17,30 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        null: true,
+        required: false,
         trim: true,
         minlength: 6
     },
     birthday: {
         type: Date,
+        null: true,
+        required: false,
+        trim: true,
+        minlength: 6,
+    },
+    role: {
+        type: String,
+        null: true,
+        required: false,
+        trim: true,
+        minlength: 6,
+    },
+    provider: {
+        type: String,
         required: true,
         trim: true,
-        minlength: 6
+        minlength: 2,
     },
     picture: {
         type: String,

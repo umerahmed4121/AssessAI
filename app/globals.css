@@ -15,12 +15,25 @@
     --background-end-rgb: 15, 3, 23;
   }
 }
-
+::-webkit-scrollbar {
+  width: 12px; /* width of the scrollbar */
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(51, 39, 59);
+  border-radius: 10px;
+  border: 3px solid rgba(39, 28, 46, 1);
+  height: 100px;
+   /* color of the thumb */
+}
+::-webkit-scrollbar-track {
+  background-color: rgba(39, 28, 46, 1); /* color of the track */
+}
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom,
       transparent,
       rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+      
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -44,7 +57,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .form_container {
-  @apply flex flex-col m-auto px-[8vw] sm:max-w-sm sm:px-10 items-center justify-center mt-[10vh]
+  @apply flex flex-col m-auto px-[8vw] sm:max-w-sm  sm:px-10 items-center justify-center mt-[10vh]
 }
 
 .form_input {
@@ -67,7 +80,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   @apply rounded w-full px-4 py-2 bg-transparent text-white text-wrap font-bold;
 }
 
+/* Dashboard */
+.dashboard_container {
+  @apply ml-0 sm:ml-[30%] lg:ml-[20%] mt-16 p-4 sm:p-6 lg:p-8
+}
 
 .test {
-  color: #271c2ed5 ;
+  color: rgba(39, 28, 46, 0.9) ;
+}
+
+.my_blur {
+  backdrop-filter: blur(5px);
+}
+.my_blur_2 {
+  backdrop-filter: blur(10px);
 }

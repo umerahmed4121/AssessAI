@@ -1,58 +1,36 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react"
-import Navbar from "@/components/Navbar"
-import { useState, useEffect } from "react";
+"use client"
 
-
-const navLinks = [
-    { id: 1, text: 'Dashboard', href: '/dashboard' },
-    { id: 2, text: 'Quizzes', href: '/dashboard/quizzes' },
-    { id: 3, text: 'Assignments', href: '/dashboard/assignments' },
-    { id: 4, text: 'Gradebook', href: '/dashboard/gradebook' },
-    { id: 5, text: 'Students', href: '/dashboard/students' },
-    { id: 6, text: 'Settings', href: '/dashboard/settings' },
-    { id: 6, text: 'Help & Support', href: '/help-support' },
-];
+import Dashboard from '@/components/Dashboard'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const Page = () => {
 
-    const router = useRouter()
-    const { data: session, status } = useSession()
-    const [ credentialsSession, setCredentialsSession] = useState(null)
+  const router = useRouter()
+  const { data: session, status } = useSession()
+  
+  if (status === 'loading') {
+    return (
+      <Dashboard/>
+    )
+  }
 
-    useEffect(() => {
-        const getUserFromCookie = async () => {
-            try {
-                const res = await fetch('/api/auth/email/jwt', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                })
-                if (res.status === 401) {
-                    router.push('/')
-                } else if (res.status === 200) {
-                    const data = await res.json()
-                    setCredentialsSession(data)
-                }
-            } catch (error) {
-                console.error(error)
-            }
-        }
-        getUserFromCookie()
-    }, [])
+  if (session?.user?.role === null || session?.user?.birthday === null) {
+    router.push('/profile/complete')
+  } else if(session?.user?.role === 'student') {
+    router.push('/dashboard/student')
+  } else if(session?.user?.role === 'teacher') {
+    router.push('/dashboard/teacher')
+  } else {
+    router.push('/')
+  }
+  
 
-    
-    if (status === "authenticated" || credentialsSession) {
-        return (
-            <div>
-                <Navbar dashboard={true} navLinks={navLinks} />
-                <h1>Dashboard</h1>
-            </div>
-        )
-    }
+  return (
+    <Dashboard/>
+  )
 
-
-
+  
 }
 
 export default Page

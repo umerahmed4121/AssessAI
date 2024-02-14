@@ -15,6 +15,26 @@ const userSchema = new Schema({
         trim: true,
         minlength: 5
     },
+    birthday: {
+        type: Date,
+        null: true,
+        required: false,
+        trim: true,
+        minlength: 6,
+    },
+    role: {
+        type: String,
+        null: true,
+        required: false,
+        trim: true,
+        minlength: 6,
+    },
+    provider: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 2,
+    },
     picture: {
         type: String,
     },

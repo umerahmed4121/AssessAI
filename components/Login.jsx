@@ -1,8 +1,10 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import Link from "next/link"
+
 
 import { motion } from "framer-motion"
 
@@ -13,15 +15,18 @@ import { GoogleIcon } from '@/icons';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ColorRing } from 'react-loader-spinner';
 
-import { hashPassword, verifyPassword } from '@/utils/password';
+import Loader from "./Loader"
+import { set } from "mongoose"
 
-import { colors } from '@/styles';
 
 const Login = () => {
+
+
+    console.log();
     const router = useRouter()
-    const { data: session } = useSession()
+    const [loading, setLoading] = useState(false)
+
 
 
     const [providers, setProviders] = useState(null)
@@ -41,7 +46,9 @@ const Login = () => {
         password: ""
     })
 
-    const [submitting, setSubmitting] = useState(false)
+
+
+
     const [continueWithEmail, setContinueWithEmail] = useState(false)
 
     const handleContinueWithEmail = (e) => {
@@ -58,7 +65,7 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        setSubmitting(true)
+        setLoading(true)
         const { email, password } = formData
         try {
             const res = await fetch('/api/auth/email/login', {
@@ -75,25 +82,27 @@ const Login = () => {
                 toast("User not found!", {
                     type: 'error'
                 })
-                setSubmitting(false)
+                setLoading(false)
                 return
             } else if (res.status === 401) {
                 toast("Incorrect password!", {
                     type: 'error'
                 })
-                setSubmitting(false)
+                setLoading(false)
                 return
             } else if (res.status === 200) {
                 const data = await res.json()
-
-                console.log(data);
+                setFormData({ email: "", password: "" })
                 toast("Login successful!", {
                     type: 'success'
                 })
-                setSubmitting(false)
-                setTimeout(() => {
+                if (data.user.role === 'teacher') {
+                    router.push('/dashboard/teacher')
+                } else if (data.user.role === 'student') {
+                    router.push('/dashboard/student')
+                } else {
                     router.push('/dashboard')
-                }, 2000);
+                }
 
             }
 
@@ -101,17 +110,16 @@ const Login = () => {
             toast(error, {
                 type: 'error'
             })
-        } finally {
-            setSubmitting(false)
+            setLoading(false)
         }
     }
 
-    const handleGoogleSignup = async (e) => {
-        console.log(formData);
-    }
+
+
 
     return (
         <div className="form_container">
+            <Loader visible={loading} />
             {!continueWithEmail ?
                 <FaArrowLeft className="invisible text-2xl" /> :
                 <FaArrowLeft className="self-start text-2xl" onClick={() => setContinueWithEmail(false)} />
@@ -155,8 +163,6 @@ const Login = () => {
                     initial="hidden"
                     animate="visible"
                     transition={{ duration: 0.5, delay: 0.5, ease: "easeInOut" }}
-
-
                     required
                     autoComplete="email"
                     type="email"
@@ -230,7 +236,10 @@ const Login = () => {
 
                                             type="button"
                                             key={provider.name}
-                                            onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
+                                            onClick={() => {
+                                                setLoading(true)
+                                                signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })
+                                            }}
                                             className="form_button_2"
                                         >
                                             <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
@@ -252,7 +261,10 @@ const Login = () => {
 
                                         type="button"
                                         key={provider.name}
-                                        onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
+                                        onClick={() => {
+                                            setLoading(true)
+                                            signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })
+                                        }}
                                         className="form_button_2 mt-3"
                                     >
                                         <span className='flex flex-row align-center justify-center gap-2'><FaGithub className='self-center w-5 h-5' />Continue with Github</span>
@@ -294,25 +306,13 @@ const Login = () => {
                     <div className="mt-4"><Link className='text-secondary' href='/'>Forgot password?</Link></div>
 
 
-                    {submitting ? (
-                        <span className='self-center'>
-                            <ColorRing
-                                visible={submitting}
-                                height="80"
-                                width="80"
-                                ariaLabel="color-ring-loading"
-                                wrapperStyle={{}}
-                                wrapperClass="color-ring-wrapper"
-                                colors={[colors.secondaryLight, colors.secondary, colors.secondaryDark, colors.secondaryDark2, colors.secondaryDark3, colors.secondaryDark4]}
-                            />
-                        </span>
 
-                    ) : (
-                        <button
-                            onClick={handleLogin}
-                            className='form_button mt-6'
-                        >Continue</button>
-                    )}
+                    <button
+                        onClick={handleLogin}
+                        className='form_button mt-6'
+                    >Continue
+                    </button>
+
 
                 </form>
             )}

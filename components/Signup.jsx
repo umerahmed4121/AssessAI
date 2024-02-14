@@ -2,44 +2,58 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession, getProviders } from "next-auth/react"
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 import { FaArrowLeft } from 'react-icons/fa';
 import { GoogleIcon } from '@/icons';
-import { FaApple } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ColorRing } from 'react-loader-spinner';
-
+import { FaCheckCircle } from "react-icons/fa";
 
 import { hashPassword, verifyPassword } from '@/utils/password';
 import { isValidDate, toDate } from '@/utils/date';
 
 import { colors } from '@/styles';
+import Loader from './Loader';
+import { set } from 'mongoose';
 
 const Signup = () => {
 
     const router = useRouter();
+    const { data: session, status } = useSession();
+    const [providers, setProviders] = useState(null)
 
     const [formData, setFormData] = useState(
         {
             email: '',
             password: '',
+            role: 'student',
             name: '',
             birthday: '',
         }
     )
 
-    const [submitting, setSubmitting] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [continueWithEmail, setContinueWithEmail] = useState(false);
     const [continueSignUp, setContinueSignUp] = useState(false)
+
 
     const passwordRef = useRef(null);
     const nameRef = useRef(null);
 
+    useEffect(() => {
+
+        const setMyProviders = async () => {
+            const response = await getProviders();
+            setProviders(response)
+        }
+        setMyProviders()
+
+    }, [])
 
 
     useEffect(() => {
@@ -84,6 +98,7 @@ const Signup = () => {
     const handleSignUp = async (e) => {
 
         e.preventDefault()
+        
 
         if (formData.name.length < 3) {
             toast("Name must be at least 3 characters long", {
@@ -96,8 +111,7 @@ const Signup = () => {
             })
             return
         }
-
-        setSubmitting(true)
+        setLoading(true)
         const hashedPassword = await hashPassword(formData.password);
         const parsedDate = toDate(formData.birthday);
 
@@ -108,6 +122,7 @@ const Signup = () => {
                     {
                         email: formData.email,
                         password: hashedPassword,
+                        role: formData.role,
                         name: formData.name,
                         birthday: parsedDate
                     }
@@ -120,34 +135,47 @@ const Signup = () => {
                 toast("Account created successfully!", {
                     type: 'success'
                 })
-                setTimeout(() => {router.push('/')}, 2000);
-                
+                setFormData({
+                    email: '',
+                    password: '',
+                    role: 'student',
+                    name: '',
+                    birthday: '',
+                })
+                const data = await res.json()
+                console.log(data);
+                if (data.role === 'teacher') {
+                    router.push('/dashboard/teacher')
+                } else {
+                    router.push('/dashboard/student')
+                }
+
 
             } else if (res.status === 409) {
                 toast("Email already exist", {
                     type: 'error'
                 })
+                setLoading(false)
             } else {
                 toast("Something went wrong!", {
                     type: 'error'
                 })
+                setLoading(false)
             }
         } catch (error) {
             console.log(error)
-        } finally {
-            setSubmitting(false)
-        }
+            toast("Something went wrong!", {
+                type: 'error'
+            })
+            setLoading(false)
+        } 
 
     };
 
-    const handleGoogleSignup = async () => {
-        // Perform Google signup logic here
-        // You can use the next-auth library to handle the Google signup process
-        await signIn('google');
-    };
 
     return (
         <div className="form_container">
+            <Loader visible={loading} />
             {!continueWithEmail || continueSignUp ?
                 <FaArrowLeft className="invisible text-2xl" /> :
                 <FaArrowLeft className="self-start text-2xl" onClick={() => setContinueWithEmail(false)} />
@@ -166,26 +194,52 @@ const Signup = () => {
                 theme="colored"
             />
 
-            {!continueSignUp && (
+            {!continueSignUp && ( // Initial form
                 <form onSubmit={handleContinueWithEmail} className='flex flex-col justify-center w-full'>
-                    <motion.h1 className="text-center text-3xl font-bold pt-10 pb-6">Create your account</motion.h1>
-                    <input 
-                    
+                    <motion.h1
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1 },
+                        }}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ duration: 0.5, delay: 0.25, ease: "easeInOut" }}
+
+                        className="text-center text-3xl font-bold pt-10 pb-6"
+                    >
+                        Create your account
+                    </motion.h1>
+                    <motion.input
+
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1 },
+                        }}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ duration: 0.5, delay: 0.5, ease: "easeInOut" }}
                         required
+                        autoComplete="email"
                         type="email"
-                        autoComplete='email'
                         placeholder="Email"
-                        value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="form_input mt-3"
                     />
 
 
                     {!continueWithEmail && (
-                        <button
+                        <motion.button
+                            variants={{
+                                hidden: { opacity: 0 },
+                                visible: { opacity: 1 },
+                            }}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ duration: 0.5, delay: 0.75, ease: "easeInOut" }}
+
                             type='submit'
                             className='form_button mt-6'
-                        >Continue</button>
+                        >Continue</motion.button>
                     )}
                 </form>
             )}
@@ -194,33 +248,83 @@ const Signup = () => {
 
             {!continueWithEmail && (
                 <>
-                    <span className='text-sm mt-4'>Already have an account?
+                    <motion.span
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: { opacity: 1 },
+                        }}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ duration: 0.5, delay: 1, ease: "easeInOut" }}
+                        className='text-sm mt-4'>Already have an account?
                         <Link className='pl-2 text-secondary' href='/auth/login'>Log in</Link>
-                    </span>
+                    </motion.span>
 
-                    <div className='flex flex-row justify-center items-center gap-2 w-full py-6 px-1'>
-                        <div className='w-full h-[1px] rounded-full bg-white'></div>
-                        <span className='text-sm'>OR</span>
-                        <div className='w-full h-[1px] rounded-full bg-white'></div>
-                    </div>
                     {/* Continue with Google */}
                     {/* https://youtu.be/wm5gMKuwSYk?t=4842 https://youtu.be/wm5gMKuwSYk */}
-                    <motion.button
-                        onClick={handleGoogleSignup}
-                        className="form_button_2"
-                    >
-                        <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
+                    {providers &&
+                        Object.values(providers).map((provider) => {
+                            if (provider.id === 'google') {
+                                return (
+                                    <>
+                                        <motion.div
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: 1.25, ease: "easeInOut" }}
+                                            className='flex flex-row justify-center items-center gap-2 w-full py-6 px-1'>
+                                            <div className='w-full h-[1px] rounded-full bg-white'></div>
+                                            <span className='text-sm'>OR</span>
+                                            <div className='w-full h-[1px] rounded-full bg-white'></div>
+                                        </motion.div>
 
-                    </motion.button>
+                                        <motion.button
+                                            variants={{
+                                                hidden: { opacity: 0 },
+                                                visible: { opacity: 1 },
+                                            }}
+                                            initial="hidden"
+                                            animate="visible"
+                                            transition={{ duration: 0.5, delay: 1.5, ease: "easeInOut" }}
 
-                    {/* Continue with Apple */}
-                    <motion.button
-                        onClick={handleGoogleSignup}
-                        className="form_button_2 mt-2"
-                    >
-                        <span className='flex flex-row align-center justify-center gap-2'><FaApple className='self-center w-5 h-5' />Continue with Apple</span>
+                                            type="button"
+                                            key={provider.name}
+                                            onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
+                                            className="form_button_2"
+                                        >
+                                            <span className='flex flex-row align-center justify-center gap-2'><GoogleIcon className='self-center' />Continue with Google</span>
 
-                    </motion.button>
+                                        </motion.button>
+                                    </>
+
+                                )
+                            } else if (provider.id === 'github') {
+                                return (
+                                    <motion.button
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: 1.75, ease: "easeInOut" }}
+
+                                        type="button"
+                                        key={provider.name}
+                                        onClick={() => signIn(provider.id, { callbackUrl: 'http://localhost:3000/dashboard' })}
+                                        className="form_button_2 mt-3"
+                                    >
+                                        <span className='flex flex-row align-center justify-center gap-2'><FaGithub className='self-center w-5 h-5' />Continue with Github</span>
+
+                                    </motion.button>
+                                )
+                            }
+
+                        })
+                    }
                 </>
 
             )}
@@ -250,6 +354,30 @@ const Signup = () => {
             {continueSignUp && (
                 <form className='flex flex-col justify-center w-full gap-[2vh]'>
                     <motion.h1 className="text-center text-3xl font-bold pb-12">Tell us about you</motion.h1>
+
+                    <div className='flex flex-row justify-center gap-3 py-1'>
+                        <button
+                            type='button'
+                            className={`border ${formData.role === 'student' ?
+                                'border-secondary text-secondary' :
+                                'border-white text-white'}
+                        w-full py-2 rounded`}
+                            onClick={() => setFormData({ ...formData, role: 'student' })}
+                        >
+                            <span className='flex flex-row justify-center items-center gap-2'>Student {formData.role === "student" && (<FaCheckCircle />)}</span>
+                        </button>
+                        <button
+                            type='button'
+                            className={`border ${formData.role === 'teacher' ?
+                                'border-secondary text-secondary' :
+                                'border-white text-white'}
+                        w-full py-2 rounded`}
+                            onClick={() => setFormData({ ...formData, role: 'teacher' })}
+                        >
+                            <span className='flex flex-row justify-center items-center gap-2'>Teacher {formData.role === "teacher" && (<FaCheckCircle />)}</span>
+                        </button>
+
+                    </div>
                     <input
                         required
                         ref={nameRef}
@@ -282,25 +410,10 @@ const Signup = () => {
                     </div>
 
 
-                    {submitting ? (
-                        <span className='self-center'>
-                            <ColorRing
-                                visible={submitting}
-                                height="80"
-                                width="80"
-                                ariaLabel="color-ring-loading"
-                                wrapperStyle={{}}
-                                wrapperClass="color-ring-wrapper"
-                                colors={[colors.secondaryLight, colors.secondary, colors.secondaryDark, colors.secondaryDark2, colors.secondaryDark3, colors.secondaryDark4]}
-                            />
-                        </span>
-
-                    ) : (
-                        <motion.button
-                            onClick={handleSignUp}
-                            className='form_button mt-6'
-                        >Agree</motion.button>
-                    )}
+                    <motion.button
+                        onClick={handleSignUp}
+                        className='form_button mt-6'
+                    >Agree</motion.button>
 
 
 

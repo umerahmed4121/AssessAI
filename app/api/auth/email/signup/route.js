@@ -1,9 +1,11 @@
 import { connectToDB } from "@/utils/database";
+import { cookies } from 'next/headers'
+import { generateToken } from "@/utils/jwt";
 import User from "@/models/user";
 
 export const POST = async (req, res) => {
 
-    const { name, email, password, birthday } = await req.json();
+    const { name, email, password, birthday, role } = await req.json();
 
     try {
         await connectToDB();
@@ -13,7 +15,7 @@ export const POST = async (req, res) => {
             return new Response(JSON.stringify(userExists), {
                 headers: { "Content-Type": "application/json" },
                 status: 409,
-                body:{
+                body: {
                     message: "User already exists"
                 }
             });
@@ -23,13 +25,36 @@ export const POST = async (req, res) => {
             name,
             email,
             password,
-            birthday
+            birthday,
+            role,
+            provider: 'email'
         });
         await user.save();
+        const token = await generateToken({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            birthday: user.birthday
+        });
+        cookies().set('token', token, {
+            expires: new Date(Date.now() + 60 * 60 * 24 * 1000) // 24 hours
+        })
+        return new Response(JSON.stringify(
+            {
 
-        return new Response(JSON.stringify(user), {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                birthday: user.birthday,
+                provider: user.provider
+
+            }
+        ), {
             headers: { "Content-Type": "application/json" },
-            status: 200
+            status: 200,
+            message: "Login successful"
         });
 
     } catch (error) {
