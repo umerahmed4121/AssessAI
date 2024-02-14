@@ -23,7 +23,9 @@ import { set } from "mongoose"
 const Login = () => {
 
 
-    console.log();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+    const callbackUrl = BASE_URL + "/dashboard"
+    console.log(callbackUrl);
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 
@@ -238,7 +240,7 @@ const Login = () => {
                                             key={provider.name}
                                             onClick={() => {
                                                 setLoading(true)
-                                                signIn(provider.id, { callbackUrl: 'https://assessai.vercel.app/dashboard' })
+                                                signIn(provider.id, { callbackUrl: callbackUrl})
                                             }}
                                             className="form_button_2"
                                         >
@@ -263,7 +265,7 @@ const Login = () => {
                                         key={provider.name}
                                         onClick={() => {
                                             setLoading(true)
-                                            signIn(provider.id, { callbackUrl: 'https://assessai.vercel.app/dashboard' })
+                                            signIn(provider.id, { callbackUrl: callbackUrl })
                                         }}
                                         className="form_button_2 mt-3"
                                     >
