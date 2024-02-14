@@ -238,7 +238,7 @@ const Login = () => {
                                             key={provider.name}
                                             onClick={() => {
                                                 setLoading(true)
-                                                signIn(provider.id, { callbackUrl: '/dashboard' })
+                                                signIn(provider.id, { callbackUrl: 'https://assessai.vercel.app/dashboard' })
                                             }}
                                             className="form_button_2"
                                         >
@@ -263,7 +263,7 @@ const Login = () => {
                                         key={provider.name}
                                         onClick={() => {
                                             setLoading(true)
-                                            signIn(provider.id, { callbackUrl: '/dashboard' })
+                                            signIn(provider.id, { callbackUrl: 'https://assessai.vercel.app/dashboard' })
                                         }}
                                         className="form_button_2 mt-3"
                                     >
