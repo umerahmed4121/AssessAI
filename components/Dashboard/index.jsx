@@ -17,7 +17,7 @@ const Row = () => {
 
 const Dashboard = () => {
     return (
-        <div className='dashboard_container '>
+        <div className=''>
             <Loader visible={true} />
 
             <div className='hidden sm:grid gap-12 animate-pulse'>

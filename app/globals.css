@@ -80,13 +80,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   @apply rounded w-full px-4 py-2 bg-transparent text-white text-wrap font-bold;
 }
 
+/* Sidebar */
+
+.sidebar_container {
+  @apply hidden sm:flex sm:w-[30%] lg:w-[20%] h-screen bg-primary-transparent px-3 py-4
+}
+
 /* Dashboard */
 .dashboard_container {
-  @apply ml-0 sm:ml-[30%] lg:ml-[20%] mt-16 p-4 sm:p-6 lg:p-8
+  @apply  w-full ml-0 sm:pl-[calc(30%+0.75rem)] lg:pl-[calc(20%+1.5rem)] mt-16 p-4 sm:p-6 lg:p-8 flex justify-center
 }
 
 .test {
-  color: rgba(39, 28, 46, 0.9) ;
+  color: #0f0317;
+  color: #6a5677 ;
+  color: #271c2e;
 }
 
 .my_blur {

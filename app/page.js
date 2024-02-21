@@ -1,14 +1,9 @@
 'use client';
-
+import React from 'react'
 import Image from 'next/image'
 import Main from '@/components/Main'
 import About from '@/components/About'
-
-
-import { useRouter } from 'next/navigation'
-
 import Navbar from '@/components/Navbar'
-import { useSession } from 'next-auth/react'
 
 const navLinks = [
   { id: 1, text: 'Home', href: '/' },

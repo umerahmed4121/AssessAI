@@ -10,7 +10,10 @@ export default function RootLayout({ children }) {
   return (
     <>
       <Sidebar />
-      {children}
+      <div className='dashboard_container'>
+        {children}
+      </div>
+
     </>
   )
 }

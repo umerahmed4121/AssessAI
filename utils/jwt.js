@@ -15,7 +15,7 @@ import { sign, verify } from 'jsonwebtoken';
 
  const verifyToken = async (token) => {
     try {
-        return verify(token.value, process.env.JWT_SECRET)
+        return verify(token, process.env.JWT_SECRET)
     } catch (error) {
         console.error(error.message)
         return null;

@@ -94,6 +94,7 @@ const Login = () => {
                 return
             } else if (res.status === 200) {
                 const data = await res.json()
+                
                 setFormData({ email: "", password: "" })
                 toast("Login successful!", {
                     type: 'success'
@@ -166,6 +167,7 @@ const Login = () => {
                     animate="visible"
                     transition={{ duration: 0.5, delay: 0.5, ease: "easeInOut" }}
                     required
+                    name="email"
                     autoComplete="email"
                     type="email"
                     placeholder="Email"

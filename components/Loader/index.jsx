@@ -4,10 +4,10 @@ import React from 'react'
 import { Bars } from 'react-loader-spinner'
 import { colors } from '@/styles'
 
-const Loader = ({visible}) => {
+const Loader = ({visible, dashboard}) => {
     return (
         visible && (
-        <div className='absolute top-0 left-0 w-full h-screen z-20 bg-[#00000080] my_blur flex justify-center items-center'>
+        <div className={`absolute z-20 bg-[#00000080] my_blur flex justify-center items-center ${dashboard?"h-[calc(100vh-60px)] w-full sm:w-[70%] lg:w-[80%] top-[60px] sm:left-[30%] lg:left-[20%]":"w-full h-screen top-0 left-0"}`}>
 
         <Bars
             height="80"

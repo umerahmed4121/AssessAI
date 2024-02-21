@@ -1,4 +1,4 @@
-const isValidDate = (dateString) => {
+export const isValidDate = (dateString) => {
   const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
   if (!dateRegex.test(dateString)) {
@@ -13,9 +13,20 @@ const isValidDate = (dateString) => {
   return !isNaN(parsedDate.getTime()) && parsedDate <= currentDate && parsedDate >= new Date(currentDate.getFullYear() - 100, currentDate.getMonth(), currentDate.getDate());
 };
 
-const toDate = (dateString) => {
+export const toDate = (dateString) => {
   const [day, month, year] = dateString.split('/');
   return new Date(`${year}-${month}-${day}`);
 }
 
-export { isValidDate, toDate }
+export const mongoDateToString = (dateString) => {
+
+
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+  return formattedDate;
+
+
+}
+
+

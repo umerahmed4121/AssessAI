@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars } from 'react-icons/fa';
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ColorRing } from 'react-loader-spinner'
-import { colors } from '@/styles'
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import { getUserFromCookie } from '../apis/credentialSession';
 
 const initialColor = {
     r: 15,
@@ -31,19 +32,30 @@ const diffColor = {
 
 const Navbar = ({ navLinks, dashboard }) => {
 
+    const { data: session, status } = useSession();
+    const [credentialSession, setCredentialSession] = useState(null);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        const getData = async () => {
+            const user = await getUserFromCookie()
+            if (user) {
+                setCredentialSession(user)
+            }
+        }
+        getData()
+    }, [])
+
+
     const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const toggleMobileMenu = () => {
         setMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    useEffect(() => {
-        if (isMobileMenuOpen) {
-
-        }
-
-    }, [isMobileMenuOpen])
 
 
     const BackgroundColor = () => {
@@ -55,7 +67,7 @@ const Navbar = ({ navLinks, dashboard }) => {
             const handleScroll = () => {
                 const currentPosition = window.scrollY;
                 const windowHeight = window.innerHeight;
-                const navbar = document.querySelector("#navbar");
+                const navbar = window.document.querySelector("#navbar");
                 if (isMobileMenuOpen) {
                     navbar.style.backgroundColor = `rgba(${finalColor.r},${finalColor.g},${finalColor.b},${finalColor.a})`
                 } else {
@@ -96,7 +108,7 @@ const Navbar = ({ navLinks, dashboard }) => {
 
 
     return (
-        <motion.nav id='navbar' className="p-4 fixed top-0 w-full h-[60px] my_blur">
+        <motion.nav id='navbar' className="p-1 flex flex-row justify-center items-center fixed top-0 w-full h-[60px] my_blur">
 
             {(isMobileMenuOpen || loading) && (
                 <div className='absolute top-[60px] left-0 right-0 w-screen h-screen bg-[#00000080] z-10'>
@@ -108,7 +120,7 @@ const Navbar = ({ navLinks, dashboard }) => {
             <div className="container mx-auto flex justify-between items-center">
                 {/* Logo or Branding */}
                 <Link href="/" className="flex flex-row gap-2 text-white text-xl font-bold">
-                    <Image src="/assets/logo.png" width={30} height={30} alt='AssessAi'/>
+                    <Image src="/assets/logo.png" width={30} height={30} alt='AssessAi' />
                     AssessAi
                 </Link>
 
@@ -121,12 +133,72 @@ const Navbar = ({ navLinks, dashboard }) => {
                                 scale: 1.1,
                             }}
                             className="text-white hover:text-secondary-light cursor-pointer"
+                            onClick={() => setLoading(true)}
                         >
                             <a href={link.href}>{link.text}</a>
                         </motion.li>
                     ))}
-                    
+
                 </ul>
+
+
+
+                <div className=' w-[100px] hidden md:flex md:flex-col'>
+                    {(status === 'authenticated' && session) && (
+                        <div
+                            className="hidden md:flex md:justify-center"
+                            onMouseEnter={() => setProfileMenuOpen(true)}
+                            onMouseLeave={() => setTimeout(() => setProfileMenuOpen(false), 5000)}
+                        >
+                            <Image src={session.user.image} width={30} height={30} className='w-10 h-10 rounded-full cursor-pointer' />
+                        </div>
+                    )}
+
+                    {credentialSession && (
+
+                        <div
+                            className="hidden md:flex md:justify-center"
+                            onMouseEnter={() => setProfileMenuOpen(true)}
+                            onMouseLeave={() => setTimeout(() => setProfileMenuOpen(false), 5000)}
+                        >
+                            {credentialSession.picture ? (
+                                <Image
+                                    src={credentialSession.picture}
+                                    width={30} height={30}
+                                    className='w-10 h-10 rounded-full cursor-pointer' />
+                            ) : (
+                                <Image
+                                    src={"/assets/icons/avatar.svg"}
+                                    width={30} height={30}
+                                    className='w-10 h-10 rounded-full cursor-pointer p-1 bg-white' />
+                            )}
+
+                        </div>
+                    )}
+
+                    {!(status === 'authenticated' && session) && !credentialSession && (
+                        <Link href='/auth/login' className="hidden md:flex md:justify-center">
+                            Login
+                        </Link>
+                    )}
+
+
+
+
+                    {isProfileMenuOpen && (
+                        <div
+                            className=' bg-primary-light  border border-primary-light-2 w-[100px] h-14 absolute translate-y-11 rounded-md flex flex-col p-1 gap-1 justify-center items-center'
+                            onMouseLeave={() => setProfileMenuOpen(false)}
+                        >
+                            <Link href='/dashboard' className="text-white text-center"
+
+                            >Goto Dashboard</Link>
+                        </div>
+                    )}
+
+
+                </div>
+
 
 
                 {/* Mobile Navigation Toggle Button */}
@@ -171,44 +243,44 @@ const Navbar = ({ navLinks, dashboard }) => {
 
                                 {/* <motion.span className='w-full h-0.5 bg-white' /> */}
 
-                                
+
 
                                 <motion.div className='absolute bottom-[20%]'>
-                                        <motion.li
-                                            variants={{
-                                                hidden: { opacity: 0 },
-                                                visible: { opacity: 1 },
-                                            }}
-                                            initial="hidden"
-                                            animate="visible"
-                                            transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
+                                    <motion.li
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
 
-                                            key={"login"}
-                                            whileHover={{ color: '#ff9900' }}
-                                            className="text-white text-right text-base py-2 cursor-pointer"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            <Link href='/auth/login' >Log in</Link>
+                                        key={"login"}
+                                        whileHover={{ color: '#ff9900' }}
+                                        className="text-white text-right text-base py-2 cursor-pointer"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Link href='/auth/login' >Log in</Link>
 
 
-                                        </motion.li>
-                                        <motion.li
-                                            variants={{
-                                                hidden: { opacity: 0 },
-                                                visible: { opacity: 1 },
-                                            }}
-                                            initial="hidden"
-                                            animate="visible"
-                                            transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
+                                    </motion.li>
+                                    <motion.li
+                                        variants={{
+                                            hidden: { opacity: 0 },
+                                            visible: { opacity: 1 },
+                                        }}
+                                        initial="hidden"
+                                        animate="visible"
+                                        transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
 
-                                            key={'signup'}
-                                            whileHover={{ color: '#ff9900' }}
-                                            className="text-white text-base py-2 cursor-pointer"
-                                            onClick={() => setMobileMenuOpen(false)}
-                                        >
-                                            <Link href='/auth/signup' >Sign up</Link>
-                                        </motion.li>
-                                    </motion.div>
+                                        key={'signup'}
+                                        whileHover={{ color: '#ff9900' }}
+                                        className="text-white text-base py-2 cursor-pointer"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        <Link href='/auth/signup' >Sign up</Link>
+                                    </motion.li>
+                                </motion.div>
 
 
 

@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import Loader from "../Loader";
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars } from 'react-icons/fa';
+import { getUserFromCookie } from "../apis/credentialSession";
 
 
 
@@ -64,22 +65,11 @@ const Sidebar = () => {
 
   useEffect(() => {
 
-    const getUserFromCookie = async () => {
-      try {
-        const res = await fetch('/api/auth/email/jwt', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        })
-        if (res.status === 200) {
-          const data = await res.json()
-          setCredentialsSession(data)
-        }
-      } catch (error) {
-        // console.error(error)
-      }
-
+    const getData =  async ()  =>{
+      const data = await getUserFromCookie()
+      setCredentialsSession(data)
     }
-    getUserFromCookie()
+    getData()
   }, [])
 
   const pathname = usePathname()
@@ -116,7 +106,7 @@ const Sidebar = () => {
 
             {/* Mobile Navigation Toggle Button */}
             <button
-              className="md:hidden text-white z-20"
+              className="sm:hidden text-white z-20"
               onClick={toggleMobileMenu}
             >
               <FaBars />
@@ -200,7 +190,7 @@ const Sidebar = () => {
         </motion.nav>
 
       </div>
-      <div className="hidden sm:flex sm:w-[30%] lg:w-[20%] h-screen bg-primary-transparent px-3 py-4">
+      <div className="sidebar_container">
         <div className='w-full h-full flex flex-col'>
           {/* <h1 className='text-xl  pt-2 pb-12 px-2 h-fit '>AssessAI</h1> */}
 
@@ -208,10 +198,10 @@ const Sidebar = () => {
             {navLinks.map((link) => (
               <li
                 key={link.id}
-                className='text-white py-2 cursor-pointer'>
+                className={`text-white w-full py-2 cursor-pointer ${link.href==pathname?"bg-secondary rounded-md hover:text-white":" hover:text-secondary"}`}>
                 <Link
                   href={link.href}
-                  className="flex flex-row items-center gap-2 cursor-pointer hover:text-secondary">
+                  className={`flex flex-row items-center gap-2 cursor-pointer `}>
                   <div>{link.icon}</div>
                   <div>{link.text}</div>
                 </Link>
@@ -229,7 +219,7 @@ const Sidebar = () => {
                     } else if (credentialsSession) {
                       signOutEmail()
                     } else {
-                      console.log(session, credentialsSession);
+                      router.replace('/')
                     }
                   }} >
                   <div><MdLogout /></div>

@@ -1,7 +1,9 @@
+"use client"
+
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Loader from './Loader'
+import Loader from '@/components/Loader'
 /* 
 
 sm: 640px
