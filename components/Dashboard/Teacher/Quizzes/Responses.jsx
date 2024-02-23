@@ -114,7 +114,7 @@ const Responses = ({ quiz_id }) => {
                         </button>
                     </div>
 
-                    <div className={`fixed border border-primary-light-2 bg-primary-light ${showParticipants ? " w-[60%] sm:w-[40%] md:w-[35%] lg:w-[20%]" : " w-0 opacity-0"} h-screen right-0 top-[60px] transition-all duration-500`}
+                    <div className={`fixed border border-primary-light-2 bg-primary-light ${showParticipants ? " w-[70%] sm:w-[40%] md:w-[35%] lg:w-[20%]" : " w-0 opacity-0"} h-screen right-0 top-[60px] transition-all duration-500`}
                     onMouseLeave={() => setShowParticipants(false)}
                     
                     >
