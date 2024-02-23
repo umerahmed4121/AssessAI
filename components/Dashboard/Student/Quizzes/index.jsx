@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaPlus } from "react-icons/fa6";
 import { IoOpenOutline } from "react-icons/io5";
 import Link from 'next/link'
@@ -13,13 +13,36 @@ import Spinner from '@/components/Spinner';
 import Loader from '@/components/Loader';
 import ToggleButton from '@/components/Utils/ToggleButton';
 import { mongoDateToString } from '@/utils/date';
+import { getUserFromCookie } from '@/components/apis/credentialSession';
 
 
-const Quizzes = ({ params }) => {
+const Quizzes = () => {
 
     const router = useRouter()
 
-    const { data, status } = useQuery('quizzes', getQuizzesByParticipant.bind(this, params))
+     // Getting user_id ----------------------------------------------------
+     const { data: session, status:sessionStatus } = useSession()
+     const [user_id, setUser_id] = useState(null)
+   
+     useEffect(() => {
+       const getData = async () => {
+         const user = await getUserFromCookie()
+         if (user) {
+           setUser_id(user.id)
+         }
+       }
+       getData()
+     }, [])
+   
+     useEffect(() => {
+       if (sessionStatus === 'authenticated') {
+         setUser_id(session.user.id)
+       }
+     }, [sessionStatus])
+ 
+     // ----------------------------------------------------------------------
+
+    const { data, status } = useQuery('quizzes', getQuizzesByParticipant.bind(this, user_id),{enabled: user_id !== null})
     const [loading, setLoading] = useState(false)
     const tableHeaderStyle = 'bg-primary-light p-2'
 
@@ -93,11 +116,6 @@ const Quizzes = ({ params }) => {
                 </div>
             </div>
 
-
-            <Link href={`quizzes/create`} onClick={() => setLoading(true)} className='bg-secondary w-10 h-10 sm:w-14 sm:h-14 fixed bottom-10 right-10 rounded-full flex justify-center items-center transition duration-500 delay-200 hover:scale-125 '>
-                <FaPlus className='text-white text-3xl' />
-
-            </Link>
 
         </div>
     )

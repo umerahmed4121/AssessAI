@@ -18,7 +18,7 @@ export const POST = async (req, resp) => {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const prompt1 = `
-You are a teacher a you have a quiz to assess. You are given a quiz in form of javascript object that contains quiz.question the question of the quiz, quiz.answer the correct answer of the quiz, quiz.totalMarks the total marks of the quiz, ignore quiz._id the id of the quiz, quiz.responses an array that contains the responses of the quiz. Each response object contains responses[i].participant_id which can be ignored, responses[i].answer the answer of the participant, obtainedMarks the marks to be obtained by the participant initialized to 0, ignore _id the id of the response. The responses array can contain multiple responses of the participants. The task is to assess the responses of the participants and update the obtainedMarks of each response object in the responses array. Compare the responses[i].answer with the quiz.answer and give a score out of totalMarks of the corresponding question and update the obtainedMarks of each response object in the responses array. The modification should only be done the responses[i].obtainedMarks and not anywhere else. You should just return the same object with modification in obtainedMarks, in a string which I can placed in eval() function to convert in an object. Don't write anything else
+
 {
     question: 'What is waterfall model in software engineering',
     answer: 'The Waterfall Model was the first Process Model to be introduced. It is also referred to as a linear-sequential life cycle model. It is very simple to understand and use. In a waterfall model, each phase must be completed before the next phase can begin and there is no overlapping in the phases.',
@@ -47,7 +47,6 @@ You are a teacher a you have a quiz to assess. You are given a quiz in form of j
 }`
 
         
-        const results = [];
         for (const assessment of quiz.assessments) {
             for (const response of assessment.responses) {
                 const prompt = `Compare the answer with ideal answer and give only the obtained marks out of ${assessment.totalMarks} not anything else.
@@ -62,13 +61,10 @@ You are a teacher a you have a quiz to assess. You are given a quiz in form of j
                 console.log(response.aiRemarks);
             }
         }
-        quiz.save();
+        await quiz.save();
 
-        // const result = await model.generateContent(prompt);
-        // const response = await result.response;
-        // const text = response.text();
 
-        console.log(results);
+        
 
 
         return new Response(JSON.stringify(quiz), {

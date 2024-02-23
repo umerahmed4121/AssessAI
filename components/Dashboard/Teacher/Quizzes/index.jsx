@@ -18,11 +18,11 @@ import { getUserFromCookie } from '@/components/apis/credentialSession';
 const Quizzes = () => {
 
 
-    // 
+    
 
     const [user_id, setUser_id] = useState(null)
     const { data: session, status:sessionStatus } = useSession()
-    const [component, setComponent] = useState(<Loader visible={true} dashboard={true} />)
+
   
     useEffect(() => {
       const getData = async () => {
@@ -61,7 +61,7 @@ const Quizzes = () => {
         quiz.isAcceptingResponses = !quiz.isAcceptingResponses;
         updateQuizMutation.mutate(quiz);
     }
-    console.log("In components\Dashboard\Teacher\Quizzes\index.jsx \n", data);
+
 
 
     return (
