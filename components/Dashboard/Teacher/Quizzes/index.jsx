@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaPlus } from "react-icons/fa6";
 import { IoMdOpen } from "react-icons/io";
 import Link from 'next/link'
@@ -12,16 +12,44 @@ import Loader from '@/components/Loader';
 import ToggleButton from '@/components/Utils/ToggleButton';
 import { mongoDateToString } from '@/utils/date';
 import { useRouter } from 'next/navigation';
+import { getUserFromCookie } from '@/components/apis/credentialSession';
 
 
-const Quizzes = ({ params }) => {
+const Quizzes = () => {
+
+
+    // 
+
+    const [user_id, setUser_id] = useState(null)
+    const { data: session, status:sessionStatus } = useSession()
+    const [component, setComponent] = useState(<Loader visible={true} dashboard={true} />)
+  
+    useEffect(() => {
+      const getData = async () => {
+        const user = await getUserFromCookie()
+        if (user) {
+            setUser_id(user.id)
+            queryClient.invalidateQueries("quizzes");
+        }
+      }
+      getData()
+    }, [])
+  
+    useEffect(() => {
+      if (sessionStatus === 'authenticated') {
+        setUser_id(session.user.id)
+        queryClient.invalidateQueries("quizzes");
+      }
+    }, [sessionStatus])
+
 
     const router = useRouter()
-    const { data, status } = useQuery('quizzes', getQuizzesByCreator.bind(this, params))
+    const { data, status } = useQuery('quizzes', getQuizzesByCreator.bind(this, user_id),{enabled: user_id !== null})
     const [loading, setLoading] = useState(false)
     const tableHeaderStyle = 'bg-primary-light p-2'
 
     const queryClient = useQueryClient();
+    
     const updateQuizMutation = useMutation(updateQuiz, {
         onSuccess: () => {
             // Invalidates  cache and refetch
@@ -33,7 +61,7 @@ const Quizzes = ({ params }) => {
         quiz.isAcceptingResponses = !quiz.isAcceptingResponses;
         updateQuizMutation.mutate(quiz);
     }
-    console.log(data);
+    console.log("In components\Dashboard\Teacher\Quizzes\index.jsx \n", data);
 
 
     return (

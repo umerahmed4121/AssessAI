@@ -213,27 +213,30 @@ const Navbar = ({ navLinks, dashboard }) => {
 
                 <AnimatePresence>
                     {isMobileMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
+                        <motion.aside
+                            initial={{ width: 0 }}
+                            animate={{
+                                width: '70%',
+                            }}
+                            exit={{
+                                width: 0,
+                                transition: { duration: 0.2 }
+                            }}
 
                             className={`md:hidden w-[70%] h-screen absolute top-full right-0 bg-primary-light p-6 z-20`}
                         >
                             <ul className="flex flex-col items-end space-y-2">
                                 {navLinks.map((link, index) => (
                                     <motion.li
+                                        key={link.id}
                                         variants={{
                                             hidden: { opacity: 0 },
                                             visible: { opacity: 1 },
                                         }}
                                         initial="hidden"
                                         animate="visible"
-                                        transition={{ duration: 0.5, delay: index * 0.25, ease: "easeInOut" }}
-
-                                        key={link.id}
-                                        whileHover={{ color: '#ff9900' }}
+                                        transition={{ duration: 0.1, delay: index * 0.1, ease: "easeInOut" }}
+                                        exit={{ opacity: 0, x: -50, transition: { duration: 0.1 } }}
                                         className="text-white text-base py-2"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
@@ -243,9 +246,7 @@ const Navbar = ({ navLinks, dashboard }) => {
 
                                 {/* <motion.span className='w-full h-0.5 bg-white' /> */}
 
-
-
-                                <motion.div className='absolute bottom-[20%]'>
+                                {(status === 'authenticated' && session) && (
                                     <motion.li
                                         variants={{
                                             hidden: { opacity: 0 },
@@ -253,17 +254,17 @@ const Navbar = ({ navLinks, dashboard }) => {
                                         }}
                                         initial="hidden"
                                         animate="visible"
-                                        transition={{ duration: 0.5, delay: navLinks.length * 0.25, ease: "easeInOut" }}
-
-                                        key={"login"}
-                                        whileHover={{ color: '#ff9900' }}
-                                        className="text-white text-right text-base py-2 cursor-pointer"
-                                        onClick={() => setMobileMenuOpen(false)}
+                                        transition={{ duration: 0.1, delay: navLinks.length * 0.1, ease: "easeInOut" }}
+                                        exit={{ opacity: 0, x: -50, transition: { duration: 0.1 } }}
+                                        className="text-white text-base py-2"
+                                        onClick={() => {setMobileMenuOpen(false); setLoading(true)}}
                                     >
-                                        <Link href='/auth/login' >Log in</Link>
-
-
+                                        <Link href="/dashboard">Dashboard</Link>
                                     </motion.li>
+                                )}
+
+                                {credentialSession && (
+
                                     <motion.li
                                         variants={{
                                             hidden: { opacity: 0 },
@@ -271,24 +272,20 @@ const Navbar = ({ navLinks, dashboard }) => {
                                         }}
                                         initial="hidden"
                                         animate="visible"
-                                        transition={{ duration: 0.5, delay: (navLinks.length + 1) * 0.25, ease: "easeInOut" }}
-
-                                        key={'signup'}
-                                        whileHover={{ color: '#ff9900' }}
-                                        className="text-white text-base py-2 cursor-pointer"
+                                        transition={{ duration: 0.1, delay: navLinks.length * 0.1, ease: "easeInOut" }}
+                                        exit={{ opacity: 0, x: -50, transition: { duration: 0.1 } }}
+                                        className="text-white text-base py-2"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
-                                        <Link href='/auth/signup' >Sign up</Link>
+                                        <Link href="/dashboard">Dashboard</Link>
                                     </motion.li>
-                                </motion.div>
-
-
+                                )}
 
                             </ul>
 
 
 
-                        </motion.div>
+                        </motion.aside>
                     )}
                 </AnimatePresence>
 

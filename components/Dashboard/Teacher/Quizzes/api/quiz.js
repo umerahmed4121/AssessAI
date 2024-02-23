@@ -81,4 +81,24 @@ export const getResponsesOfQuiz = async ({creator_id, quiz_id}) => {
     }
 
 }
+export const assessQuizWithGpt = async (quiz_id) => {
+
+    try {
+        const response = await fetch(`/api/quiz/assess_with_gpt`, {
+            method: 'POST',
+            body: JSON.stringify({ quiz_id: quiz_id}),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+}
 

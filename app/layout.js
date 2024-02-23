@@ -1,10 +1,10 @@
-import { Inter, Raleway } from 'next/font/google'
+import { Inter, Jost } from 'next/font/google'
 import './globals.css'
 import Provider from '@/components/Provider'
 
 
 const inter = Inter({ subsets: ['latin'] })
-const raleway = Raleway({ subsets: ['latin'] })
+const jost = Jost({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'AssessAI | Smart Assessment',
@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
 
       <Provider>
         
-          <body className={raleway.className}  >
+          <body className={jost.className}  >
             {children}
           </body>
         

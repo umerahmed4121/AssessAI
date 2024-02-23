@@ -27,6 +27,7 @@ const QuizResponse = ({ token }) => {
         const updatedResponse = { ...response }
         updatedResponse.assessments[index][field] = value;
         setResponse(updatedResponse)
+        submitResponseMutation.mutate(response)
     };
 
 

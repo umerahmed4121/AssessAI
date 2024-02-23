@@ -20,6 +20,7 @@ import { isValidDate, toDate } from '@/utils/date';
 import { colors } from '@/styles';
 import Loader from './Loader';
 import { set } from 'mongoose';
+import Image from 'next/image';
 
 const Signup = () => {
 
@@ -98,7 +99,7 @@ const Signup = () => {
     const handleSignUp = async (e) => {
 
         e.preventDefault()
-        
+
 
         if (formData.name.length < 3) {
             toast("Name must be at least 3 characters long", {
@@ -168,7 +169,7 @@ const Signup = () => {
                 type: 'error'
             })
             setLoading(false)
-        } 
+        }
 
     };
 
@@ -196,6 +197,9 @@ const Signup = () => {
 
             {!continueSignUp && ( // Initial form
                 <form onSubmit={handleContinueWithEmail} className='flex flex-col justify-center w-full'>
+                    <motion.div className="w-full flex items-center justify-center p-1">
+                        <Image src={"/assets/logo.png"} alt="AssessAI" width={80} height={80} />
+                    </motion.div>
                     <motion.h1
                         variants={{
                             hidden: { opacity: 0 },
@@ -205,7 +209,7 @@ const Signup = () => {
                         animate="visible"
                         transition={{ duration: 0.5, delay: 0.25, ease: "easeInOut" }}
 
-                        className="text-center text-3xl font-bold pt-10 pb-6"
+                        className="text-center text-3xl font-bold py-6"
                     >
                         Create your account
                     </motion.h1>

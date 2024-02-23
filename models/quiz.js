@@ -76,6 +76,11 @@ const quizSchema = new Schema({
                         required: true,
                         default: 0
                     },
+                    aiRemarks: {
+                        type: String,
+                        required: false,
+                        default: ""
+                    },
                 }],
                 required: false,
                 default: []

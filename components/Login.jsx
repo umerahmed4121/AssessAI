@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 
 
 import { motion } from "framer-motion"
@@ -94,7 +95,7 @@ const Login = () => {
                 return
             } else if (res.status === 200) {
                 const data = await res.json()
-                
+
                 setFormData({ email: "", password: "" })
                 toast("Login successful!", {
                     type: 'success'
@@ -140,6 +141,9 @@ const Login = () => {
                 pauseOnHover
                 theme="colored"
             />
+            <motion.div className="w-full flex items-center justify-center p-1">
+                <Image src={"/assets/logo.png"} alt="AssessAI" width={80} height={80} />
+            </motion.div>
 
             <motion.h1
                 variants={{
@@ -150,7 +154,7 @@ const Login = () => {
                 animate="visible"
                 transition={{ duration: 0.5, delay: 0.25, ease: "easeInOut" }}
 
-                className="text-center text-3xl font-bold pt-10 pb-6"
+                className="text-center text-3xl font-bold py-6"
             >
                 Welcome back
             </motion.h1>
@@ -242,7 +246,7 @@ const Login = () => {
                                             key={provider.name}
                                             onClick={() => {
                                                 setLoading(true)
-                                                signIn(provider.id, { callbackUrl: callbackUrl})
+                                                signIn(provider.id, { callbackUrl: callbackUrl })
                                             }}
                                             className="form_button_2"
                                         >

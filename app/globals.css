@@ -40,6 +40,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: none;
 }
 
+/* input {
+  @apply bg-transparent text-white border border-primary-light-2 rounded-md w-full px-4 py-2;
+} */
+
 .heading_2 {
   @apply text-4xl font-medium ;
 }

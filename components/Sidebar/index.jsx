@@ -44,6 +44,14 @@ const Sidebar = () => {
   //   )
   // }
 
+  const getPathname = (href,pathname) => {
+    const path = pathname.split('/');
+    const hrefPath = href.split('/');
+    return path.pop() === hrefPath.pop()
+    
+
+  }
+
   if (session?.user.birthday === null || session?.user.role === null) {
     router.push('/profile/complete')
   }
@@ -65,7 +73,7 @@ const Sidebar = () => {
 
   useEffect(() => {
 
-    const getData =  async ()  =>{
+    const getData = async () => {
       const data = await getUserFromCookie()
       setCredentialsSession(data)
     }
@@ -80,6 +88,8 @@ const Sidebar = () => {
     navLinks = teacherDashboardNavLinks
   }
 
+  console.log(pathname);
+
 
 
   return (
@@ -88,7 +98,7 @@ const Sidebar = () => {
 
       <div className="bg-primary-transparent my_blur border-b-4 border-primary-light h-[60px] p-1">
 
-        <motion.nav id='navbar' className="p-4 fixed top-0 w-full h-[60px] my_blur">
+        <motion.nav id='navbar' className="p-1 flex items-center fixed top-0 w-full h-[60px] my_blur">
 
           {(isMobileMenuOpen || loading) && (
             <div className='absolute top-[60px] left-0 right-0 w-screen h-screen bg-[#00000080] z-10'>
@@ -103,6 +113,37 @@ const Sidebar = () => {
               <Image src="/assets/logo.png" width={30} height={30} alt='AssessAi' />
               AssessAi
             </Link>
+
+            <div className=' w-[100px] hidden md:flex md:flex-col items-center'>
+              {(status === 'authenticated' && session) && (
+                <div
+                  className="hidden md:flex md:justify-center"
+                >
+                  <Image src={session.user.image} width={30} height={30} className='w-10 h-10 rounded-full cursor-pointer' />
+                </div>
+              )}
+
+              {credentialsSession && (
+
+                <div
+                  className="hidden md:flex md:justify-center"
+                >
+                  {credentialsSession.picture ? (
+                    <Image
+                      src={credentialsSession.picture}
+                      width={30} height={30}
+                      className='w-10 h-10 rounded-full cursor-pointer' />
+                  ) : (
+                    <Image
+                      src={"/assets/icons/avatar.svg"}
+                      width={30} height={30}
+                      className='w-10 h-10 rounded-full cursor-pointer p-1 bg-white' />
+                  )}
+
+                </div>
+              )}
+
+            </div>
 
             {/* Mobile Navigation Toggle Button */}
             <button
@@ -158,7 +199,7 @@ const Sidebar = () => {
                       initial="hidden"
                       animate="visible"
                       transition={{ duration: 0.1, delay: navLinks.length * 0.1, ease: "easeInOut" }}
-                      exit={{ opacity: 0, x: -50, transition: { duration: 0.1 }}}
+                      exit={{ opacity: 0, x: -50, transition: { duration: 0.1 } }}
 
                       whileHover={{ color: '#ff9900' }}
                       className="text-white text-right text-base py-2 cursor-pointer"
@@ -172,7 +213,7 @@ const Sidebar = () => {
                           console.log(session, credentialsSession);
                         }
                       }}
-                      >Sign out</motion.li>
+                    >Sign out</motion.li>
 
 
 
@@ -195,10 +236,10 @@ const Sidebar = () => {
           {/* <h1 className='text-xl  pt-2 pb-12 px-2 h-fit '>AssessAI</h1> */}
 
           <ul className={`h-[calc(100vh-80px)] ${navLinks.length === 0 ? 'hidden' : 'flex'} flex flex-col items-start justify-evenly text-2xl`}>
-            {navLinks.map((link) => (
+            {navLinks.map((link, index) => (
               <li
                 key={link.id}
-                className={`text-white w-full py-2 cursor-pointer ${link.href==pathname?"bg-secondary rounded-md hover:text-white":" hover:text-secondary"}`}>
+                className={`text-white w-full py-2 cursor-pointer ${getPathname(link.href,pathname) ? "bg-secondary rounded-md hover:text-white" : " hover:text-secondary"}`}>
                 <Link
                   href={link.href}
                   className={`flex flex-row items-center gap-2 cursor-pointer `}>

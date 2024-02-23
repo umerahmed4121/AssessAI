@@ -5,12 +5,14 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import QuestionCard from './QuestionCard'
 import { MdSend } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import Participants from './Participants';
 import { useMutation, useQueryClient } from 'react-query';
 import { createQuiz } from './api/quiz'
 import Loader from '@/components/Loader'
 import { useRouter } from 'next/navigation'
 import ToggleButton from '@/components/Utils/ToggleButton'
+import { set } from 'mongoose'
 
 
 const Create = () => {
@@ -27,7 +29,7 @@ const Create = () => {
     isAcceptingResponses: false,
   });
 
-  
+
 
   useEffect(() => {
     if (session) {
@@ -40,6 +42,7 @@ const Create = () => {
   const router = useRouter();
   const [assessments, setAssessments] = useState([{ totalMarks: 5, question: '', answer: '' }]);
   const [participants, setParticipants] = useState([])
+  const [showParticipants, setShowParticipants] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -85,17 +88,63 @@ const Create = () => {
 
   }
 
-  return (
-    <div className='grid sm:grid-cols-[60%,38%] gap-[2%]  w-full'>
-      <Loader visible={loading} dashboard={true} />
-      <div className='w-full flex flex-col '>
-        <button
-          className='bg-secondary w-10 h-10 sm:w-14 sm:h-14 fixed bottom-10 right-10 rounded-full flex justify-center items-center transition duration-500 delay-200 hover:scale-125 '
-          onClick={() => handleQuizCreation()}
-        >
-          <MdSend className='text-white text-3xl' />
+  const toggleShowParticipants = () => {
+    setShowParticipants(!showParticipants);
+  }
 
-        </button>
+  return (
+    <div className='grid grid-cols-1 2xl:grid-cols-[60%,38%] 2xl:gap-[2%] justify-center 2xl:justify-normal  w-full md:w-[80%] lg:w-[70%] xl:w-[60%] 2xl:w-full'>
+      <Loader visible={loading} dashboard={true} />
+
+      <div className={`fixed border border-primary-light-2 bg-primary-light ${showParticipants ? "w-[90%] sm:w-[70%]" : " w-0 opacity-0"} w-[70%] h-screen right-0 top-[60px] transition-all duration-500`}>
+        <div className='w-full bg-primary-light py-4 flex flex-col justify-center rounded-md h-[calc(100vh-113px)]'>
+          <div className='flex flex-row justify-between gap-2 w-full py-1 px-4'>
+            <h1 className='text-center text-xl py-2'>Participants</h1>
+            <div className='flex flex-row justify-center items-center gap-2'>
+              <div >
+                Responses
+              </div>
+
+              <ToggleButton
+                enable={quiz.isAcceptingResponses}
+                onChange={() => setQuiz({ ...quiz, isAcceptingResponses: !quiz.isAcceptingResponses })}
+                className={"w-16 h-8"}
+                circleClassName={"w-6 h-6"}
+              />
+
+
+
+            </div>
+
+          </div>
+
+
+          <Participants
+            participants={participants}
+            onParticipantsChange={(value) => handleParticipantsChange(value)}
+          />
+        </div>
+      </div>
+
+
+      <div className='w-full  flex flex-col '>
+        <div className="fixed bottom-[5%] right-[5%] flex gap-4">
+          <button
+            className='bg-secondary w-10 h-10 sm:w-14 sm:h-14  rounded-md flex 2xl:hidden justify-center items-center transition duration-500 delay-200 hover:scale-105 '
+            onClick={() => toggleShowParticipants()}
+          >
+            <BsThreeDotsVertical className='text-white text-3xl' />
+
+          </button>
+          <button
+            className='bg-secondary w-10 h-10 sm:w-14 sm:h-14  rounded-full flex justify-center items-center transition duration-500 delay-200 hover:scale-105 '
+            onClick={() => handleQuizCreation()}
+          >
+            <MdSend className='text-white text-3xl' />
+
+          </button>
+        </div>
+
         <input
           type="text"
           className='bg-primary m-1 p-1 focus:border-b-2 border-primary-light focus:outline-none w-full text-3xl text-center '
@@ -130,14 +179,14 @@ const Create = () => {
         </button>
 
       </div>
-      <div className='bg-primary-light hidden sm:flex sm:flex-col  border border-primary-light-2 rounded-md h-[calc(100vh-113px)]'>
-        <div className='flex flex-row justify-between items-center gap-2 w-full py-1 px-4'>
+      <div className='w-full bg-primary-light hidden 2xl:py-4 2xl:flex 2xl:flex-col justify-center border border-primary-light-2 rounded-md h-[calc(100vh-113px)]'>
+        <div className='flex flex-row justify-between gap-2 w-full py-1 px-4'>
           <h1 className='text-center text-xl py-2'>Participants</h1>
           <div className='flex flex-row justify-center items-center gap-2'>
             <div >
               Responses
             </div>
-  
+
             <ToggleButton
               enable={quiz.isAcceptingResponses}
               onChange={() => setQuiz({ ...quiz, isAcceptingResponses: !quiz.isAcceptingResponses })}
@@ -145,7 +194,7 @@ const Create = () => {
               circleClassName={"w-6 h-6"}
             />
 
-            
+
 
           </div>
 
