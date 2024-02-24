@@ -42,7 +42,7 @@ const Quizzes = () => {
  
      // ----------------------------------------------------------------------
 
-    const { data, status } = useQuery('quizzes', getQuizzesByParticipant.bind(this, user_id),{enabled: user_id !== null})
+    const { data, status } = useQuery('studentQuizzes', getQuizzesByParticipant.bind(this, user_id),{enabled: user_id !== null})
     const [loading, setLoading] = useState(false)
     const tableHeaderStyle = 'bg-primary-light p-2'
 
@@ -50,7 +50,7 @@ const Quizzes = () => {
     const createResponseMutation = useMutation(createResponse, {
         onSuccess: () => {
             // Invalidates  cache and refetch
-            queryClient.invalidateQueries("quizzes");
+            queryClient.invalidateQueries("studentQuizzes");
         },
     });
 
@@ -95,7 +95,7 @@ const Quizzes = () => {
                                             className='px-4 py-2  bg-secondary m-1 w-fit h-fit rounded-md'
                                             onClick={() => {
                                                 setLoading(true)
-                                                handleCreateResponse(params, quiz._id)
+                                                handleCreateResponse(user_id, quiz._id)
                                             }}
                                         >Start Quiz</button>
                                     ) : (

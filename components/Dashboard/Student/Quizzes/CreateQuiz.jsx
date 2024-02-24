@@ -5,42 +5,17 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import QuestionCard from './QuestionCard'
 import { MdSend } from "react-icons/md";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import Participants from './Participants';
 import { useMutation, useQueryClient } from 'react-query';
 import { createQuiz } from './api/quiz'
 import Loader from '@/components/Loader'
 import { useRouter } from 'next/navigation'
 import ToggleButton from '@/components/Utils/ToggleButton'
-import { set } from 'mongoose'
-import { getUserFromCookie } from '@/components/apis/credentialSession'
 
 
 const Create = () => {
 
-  
-  const [user_id, setUser_id] = useState(null)
-  const { data: session, status:sessionStatus } = useSession()
-
-
-  useEffect(() => {
-    const getData = async () => {
-      const user = await getUserFromCookie()
-      if (user) {
-          setUser_id(user.id)
-          queryClient.invalidateQueries("quizzes");
-      }
-    }
-    getData()
-  }, [])
-
-  useEffect(() => {
-    if (sessionStatus === 'authenticated') {
-      setUser_id(session.user.id)
-      queryClient.invalidateQueries("quizzes");
-    }
-  }, [sessionStatus])
-
+  const { data: session, status } = useSession()
 
   const [quiz, setQuiz] = useState({
     creator_id: null,
@@ -51,21 +26,17 @@ const Create = () => {
     isAcceptingResponses: false,
   });
 
-  console.log(quiz);
-
-
   useEffect(() => {
-    if (user_id !== null) {
-      setQuiz({ ...quiz, creator_id: user_id })
+    if (session) {
+      setQuiz({ ...quiz, creator_id: session.user.id })
 
     }
-  }, [user_id])
+  }, [session])
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [assessments, setAssessments] = useState([{ totalMarks: 5, question: '', answer: '' }]);
+  const [assessments, setAssessments] = useState([{ question: '', answer: '' }]);
   const [participants, setParticipants] = useState([])
-  const [showParticipants, setShowParticipants] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -77,7 +48,7 @@ const Create = () => {
   });
 
   const handleAddQuestion = () => {
-    setAssessments([...assessments, { totalMarks: 5, question: '', answer: '' }]);
+    setAssessments([...assessments, { question: '', answer: '' }]);
   };
 
   const handleQuestionChange = (index, field, value) => {
@@ -90,7 +61,6 @@ const Create = () => {
   const handleParticipantsChange = (value) => {
     setParticipants(value);
     setQuiz({ ...quiz, participants: value });
-    console.log(quiz);
   }
 
   const handleDeleteQuestion = (index) => {
@@ -106,68 +76,21 @@ const Create = () => {
     createQuizMutation.mutate(quiz);
     setLoading(true);
     router.push('/dashboard/teacher/quizzes');
-    console.log(quiz);
 
 
-  }
-
-  const toggleShowParticipants = () => {
-    setShowParticipants(!showParticipants);
   }
 
   return (
-    <div className='grid grid-cols-1 2xl:grid-cols-[60%,38%] 2xl:gap-[2%] justify-center 2xl:justify-normal  w-full md:w-[80%] lg:w-[70%] xl:w-[60%] 2xl:w-full'>
+    <div className='grid sm:grid-cols-[60%,38%] gap-[2%]  w-full'>
       <Loader visible={loading} dashboard={true} />
+      <div className='w-full flex flex-col '>
+        <button
+          className='bg-secondary w-10 h-10 sm:w-14 sm:h-14 fixed bottom-10 right-10 rounded-full flex justify-center items-center transition duration-500 delay-200 hover:scale-125 '
+          onClick={() => handleQuizCreation()}
+        >
+          <MdSend className='text-white text-3xl' />
 
-      <div className={`fixed border border-primary-light-2 bg-primary-light ${showParticipants ? "w-[100%] sm:w-[70%]" : "hidden w-0 opacity-0"} h-screen right-0 top-[60px] transition-all duration-500`}>
-        <div className='w-full bg-primary-light py-4 flex flex-col justify-center rounded-md h-[calc(100vh-113px)]'>
-          <div className='flex flex-row justify-between gap-2 w-full py-1 px-4'>
-            <h1 className='text-center text-xl py-2'>Participants</h1>
-            <div className='flex flex-row justify-center items-center gap-2'>
-              <div >
-                Responses
-              </div>
-
-              <ToggleButton
-                enable={quiz.isAcceptingResponses}
-                onChange={() => setQuiz({ ...quiz, isAcceptingResponses: !quiz.isAcceptingResponses })}
-                className={"w-16 h-8"}
-                circleClassName={"w-6 h-6"}
-              />
-
-
-
-            </div>
-
-          </div>
-
-
-          <Participants
-            participants={participants}
-            onParticipantsChange={(value) => handleParticipantsChange(value)}
-          />
-        </div>
-      </div>
-
-
-      <div className='w-full  flex flex-col '>
-        <div className="fixed bottom-[5%] right-[5%] flex gap-4">
-          <button
-            className='bg-secondary w-10 h-10 sm:w-14 sm:h-14  rounded-md flex 2xl:hidden justify-center items-center transition duration-500 delay-200 hover:scale-105 '
-            onClick={() => toggleShowParticipants()}
-          >
-            <BsThreeDotsVertical className='text-white text-3xl' />
-
-          </button>
-          <button
-            className='bg-secondary w-10 h-10 sm:w-14 sm:h-14  rounded-full flex justify-center items-center transition duration-500 delay-200 hover:scale-105 '
-            onClick={() => handleQuizCreation()}
-          >
-            <MdSend className='text-white text-3xl' />
-
-          </button>
-        </div>
-
+        </button>
         <input
           type="text"
           className='bg-primary m-1 p-1 focus:border-b-2 border-primary-light focus:outline-none w-full text-3xl text-center '
@@ -185,10 +108,8 @@ const Create = () => {
           <QuestionCard
             key={index}
             index={index}
-            totalMarks={assessment.totalMarks}
             question={assessment.question}
             answer={assessment.answer}
-            onMarksChange={(value) => handleQuestionChange(index, 'totalMarks', value)}
             onQuestionChange={(value) => handleQuestionChange(index, 'question', value)}
             onAnswerChange={(value) => handleQuestionChange(index, 'answer', value)}
             onDelete={handleDeleteQuestion}
@@ -202,14 +123,21 @@ const Create = () => {
         </button>
 
       </div>
-      <div className='w-full bg-primary-light hidden 2xl:py-4 2xl:flex 2xl:flex-col justify-center border border-primary-light-2 rounded-md h-[calc(100vh-113px)]'>
-        <div className='flex flex-row justify-between gap-2 w-full py-1 px-4'>
+      <div className='bg-primary-light hidden sm:flex sm:flex-col  border rounded-md h-[calc(100vh-113px)]'>
+        <div className='flex flex-row justify-between items-center gap-2 w-full py-1 px-4'>
           <h1 className='text-center text-xl py-2'>Participants</h1>
           <div className='flex flex-row justify-center items-center gap-2'>
             <div >
               Responses
             </div>
-
+            {/* <button
+              className={` w-16 h-8 rounded-full p-1 flex items-center transition-[display] duration-300 ease-in-out ${quiz.isAcceptingResponses ? 'justify-end bg-secondary' : 'justify-start bg-gray-300'}`}
+              onClick={() => setQuiz({ ...quiz, isAcceptingResponses: !quiz.isAcceptingResponses })}
+            >
+              <div
+                className={`bg-white w-6 h-6 rounded-full shadow-md `}
+              ></div>
+            </button> */}
             <ToggleButton
               enable={quiz.isAcceptingResponses}
               onChange={() => setQuiz({ ...quiz, isAcceptingResponses: !quiz.isAcceptingResponses })}
@@ -217,7 +145,7 @@ const Create = () => {
               circleClassName={"w-6 h-6"}
             />
 
-
+            
 
           </div>
 

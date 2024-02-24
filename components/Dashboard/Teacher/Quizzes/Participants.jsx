@@ -68,7 +68,7 @@ const Participants = ({ participants, onParticipantsChange }) => {
                                 <Image src={`${participant.picture? participant.picture: "/assets/icons/avatar.svg"}`} alt={participant.name} width={40} height={40} className={`w-10 h-10 rounded-full ${participant.picture? "":"bg-slate-300 p-1"}`}/>
                                 <div className='p-1'>
                                     <div>{participant.name}</div>
-                                    <div>{participant.email}</div>
+                                    <div className="text-sm">{participant.email}</div>
                                 </div>
                                 <div className='w-full h-full flex items-center' onClick={()=>{toggleParticipants(participant._id)}}>
                                     {

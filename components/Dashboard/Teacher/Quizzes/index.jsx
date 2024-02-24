@@ -62,6 +62,7 @@ const Quizzes = () => {
         updateQuizMutation.mutate(quiz);
     }
 
+    console.log(data);
 
 
     return (
