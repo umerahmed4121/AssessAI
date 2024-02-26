@@ -18,12 +18,13 @@ import { getUserFromCookie } from '@/components/apis/credentialSession'
 
 const Create = () => {
 
-  
+  const queryClient = useQueryClient();
   const [user_id, setUser_id] = useState(null)
   const { data: session, status:sessionStatus } = useSession()
 
 
   useEffect(() => {
+    queryClient.invalidateQueries("participants");
     const getData = async () => {
       const user = await getUserFromCookie()
       if (user) {
@@ -67,7 +68,6 @@ const Create = () => {
   const [participants, setParticipants] = useState([])
   const [showParticipants, setShowParticipants] = useState(false);
 
-  const queryClient = useQueryClient();
 
   const createQuizMutation = useMutation(createQuiz, {
     onSuccess: () => {
