@@ -22,7 +22,6 @@ const Create = () => {
   const [user_id, setUser_id] = useState(null)
   const { data: session, status:sessionStatus } = useSession()
 
-
   useEffect(() => {
     queryClient.invalidateQueries("participants");
     const getData = async () => {
