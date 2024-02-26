@@ -9,10 +9,11 @@ import { useQuery } from 'react-query'
 import Image from 'next/image'
 import Spinner from '@/components/Spinner';
 
-const Participants = ({ participants, onParticipantsChange }) => {
+const Participants = ({ participants, onParticipantsChange, user_id }) => {
 
-    const { data, status } = useQuery('participants', getParticipants)
     
+
+    const { data, status } = useQuery('participants', getParticipants.bind(this, user_id),{enabled: user_id !== null})
     
     // const toggleParticipants = (id) => {
     //     participants.filter(participant => participant.participant_id !== id)
@@ -30,7 +31,6 @@ const Participants = ({ participants, onParticipantsChange }) => {
     const toggleParticipants = (id) => {
         // Check if an object with the given id already exists in the array
         const index = participants.findIndex(obj => obj.participant_id === id);
-        console.log(index);
       
         if (index === -1) {
           // If the object does not exist, add it to the array
@@ -61,9 +61,9 @@ const Participants = ({ participants, onParticipantsChange }) => {
 
                 {status === 'loading' && <Spinner visible={true}/> }
                 {status === 'error' && <div>Error fetching data</div>}
-                {status === 'success' && data.length !== 0  && (
+                {status === 'success' && data?.length !== 0  && (
                     <ul>
-                        {data.map((participant) => (
+                        {data?.map((participant) => (
                             <li key={participant._id} className=' p-1 grid grid-cols-[10%,auto,10%] items-center wrap'>
                                 <Image src={`${participant.picture? participant.picture: "/assets/icons/avatar.svg"}`} alt={participant.name} width={40} height={40} className={`w-10 h-10 rounded-full ${participant.picture? "":"bg-slate-300 p-1"}`}/>
                                 <div className='p-1'>

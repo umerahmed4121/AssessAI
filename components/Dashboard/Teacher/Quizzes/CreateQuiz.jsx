@@ -14,21 +14,22 @@ import { useRouter } from 'next/navigation'
 import ToggleButton from '@/components/Utils/ToggleButton'
 import { set } from 'mongoose'
 import { getUserFromCookie } from '@/components/apis/credentialSession'
+import { useQuery } from 'react-query'
+import { getParticipants } from './api/participants'
 
 
 const Create = () => {
 
   const queryClient = useQueryClient();
   const [user_id, setUser_id] = useState(null)
-  const { data: session, status:sessionStatus } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
 
   useEffect(() => {
-    queryClient.invalidateQueries("participants");
     const getData = async () => {
       const user = await getUserFromCookie()
       if (user) {
-          setUser_id(user.id)
-          queryClient.invalidateQueries("quizzes");
+        setUser_id(user.id)
+        queryClient.invalidateQueries("quizzes");
       }
     }
     getData()
@@ -66,6 +67,9 @@ const Create = () => {
   const [assessments, setAssessments] = useState([{ totalMarks: 5, question: '', answer: '' }]);
   const [participants, setParticipants] = useState([])
   const [showParticipants, setShowParticipants] = useState(false);
+
+
+  // const { data, status } = useQuery('participants', getParticipants.bind(this, user_id), { enabled: user_id !== null })
 
 
   const createQuizMutation = useMutation(createQuiz, {
@@ -144,6 +148,7 @@ const Create = () => {
           <Participants
             participants={participants}
             onParticipantsChange={(value) => handleParticipantsChange(value)}
+            user_id={user_id}
           />
         </div>
       </div>
@@ -222,11 +227,13 @@ const Create = () => {
 
         </div>
 
+        {user_id !== null && (
+          <Participants
+            participants={participants}
+            onParticipantsChange={(value) => handleParticipantsChange(value)}
+            user_id={user_id}
+          />)}
 
-        <Participants
-          participants={participants}
-          onParticipantsChange={(value) => handleParticipantsChange(value)}
-        />
       </div>
     </div>
   )

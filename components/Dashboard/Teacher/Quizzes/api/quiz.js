@@ -42,7 +42,6 @@ export const updateQuiz = async (quiz) => {
 export const getQuizzesByCreator = async (user_id) => {
 
     try {
-        console.log("user_id", user_id);
         const response = await fetch(`/api/quiz/get_by_creator`, {
             method: 'POST',
             body: JSON.stringify({ creator_id: user_id }),
