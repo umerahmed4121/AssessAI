@@ -22,6 +22,9 @@ import Loader from './Loader';
 import { set } from 'mongoose';
 import Image from 'next/image';
 
+import { useMutation, useQueryClient } from 'react-query';
+import { signUp } from './apis/signup';
+
 const Signup = () => {
 
     const router = useRouter();
@@ -96,6 +99,16 @@ const Signup = () => {
 
     }
 
+
+    const queryClient = useQueryClient();
+
+    const signUpMutation = useMutation(signUp, {
+        onSuccess: () => {
+            // Invalidates  cache and refetch
+            queryClient.invalidateQueries("participants");
+        },
+    });
+
     const handleSignUp = async (e) => {
 
         e.preventDefault()
@@ -116,26 +129,15 @@ const Signup = () => {
         const hashedPassword = await hashPassword(formData.password);
         const parsedDate = toDate(formData.birthday);
 
-        try {
-            const res = await fetch('/api/auth/email/signup', {
-                method: 'POST',
-                body: JSON.stringify(
-                    {
-                        email: formData.email,
-                        password: hashedPassword,
-                        role: formData.role,
-                        name: formData.name,
-                        birthday: parsedDate
-                    }
-                ),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (res.ok) {
-                toast("Account created successfully!", {
-                    type: 'success'
-                })
+        signUpMutation.mutate({
+            email: formData.email,
+            password: hashedPassword,
+            role: formData.role,
+            name: formData.name,
+            birthday: parsedDate
+        }, {
+            onSuccess: (data) => {
+                toast("Account created successfully!", { type: 'success' })
                 setFormData({
                     email: '',
                     password: '',
@@ -143,33 +145,17 @@ const Signup = () => {
                     name: '',
                     birthday: '',
                 })
-                const data = await res.json()
-                console.log(data);
                 if (data.role === 'teacher') {
                     router.push('/dashboard/teacher')
                 } else {
                     router.push('/dashboard/student')
                 }
-
-
-            } else if (res.status === 409) {
-                toast("Email already exist", {
-                    type: 'error'
-                })
+            },
+            onError: (error) => {
+                toast(error.message, { type: 'error' })
                 setLoading(false)
-            } else {
-                toast("Something went wrong!", {
-                    type: 'error'
-                })
-                setLoading(false)
-            }
-        } catch (error) {
-            console.log(error)
-            toast("Something went wrong!", {
-                type: 'error'
-            })
-            setLoading(false)
-        }
+            },
+        });
 
     };
 
@@ -223,8 +209,9 @@ const Signup = () => {
                         animate="visible"
                         transition={{ duration: 0.5, delay: 0.5, ease: "easeInOut" }}
                         required
-                        autoComplete="email"
+                        autoComplete="true"
                         type="email"
+                        name="email"
                         placeholder="Email"
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="form_input mt-3"
@@ -387,6 +374,8 @@ const Signup = () => {
                         ref={nameRef}
                         type="text"
                         placeholder="Full name"
+                        name="fullName"
+                        autoComplete="true"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="form_input"

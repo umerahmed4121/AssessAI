@@ -9,7 +9,7 @@ import Image from "next/image"
 
 import { motion } from "framer-motion"
 
-import { signIn, useSession, getProviders } from "next-auth/react"
+import { signIn, useSession, getProviders, signOut } from "next-auth/react"
 
 import { FaArrowLeft, FaGithub } from 'react-icons/fa';
 import { GoogleIcon } from '@/icons';
@@ -18,7 +18,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Loader from "./Loader"
-import { set } from "mongoose"
+import { useMutation, useQueryClient } from 'react-query';
+import { login } from "./apis/login"
 
 
 const Login = () => {
@@ -26,7 +27,6 @@ const Login = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const callbackUrl = BASE_URL + "/dashboard"
-    console.log(callbackUrl);
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 
@@ -66,40 +66,19 @@ const Login = () => {
 
     }
 
+    const loginMutation = useMutation(login);
+
     const handleLogin = async (e) => {
         e.preventDefault()
         setLoading(true)
         const { email, password } = formData
-        try {
-            const res = await fetch('/api/auth/email/login', {
-                method: 'POST',
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            if (res.status === 404) {
-                toast("User not found!", {
-                    type: 'error'
-                })
-                setLoading(false)
-                return
-            } else if (res.status === 401) {
-                toast("Incorrect password!", {
-                    type: 'error'
-                })
-                setLoading(false)
-                return
-            } else if (res.status === 200) {
-                const data = await res.json()
-
+        loginMutation.mutate({
+            email: email,
+            password: password
+        }, {
+            onSuccess: (data) => {
+                toast("Login successful!", { type: 'success' })
                 setFormData({ email: "", password: "" })
-                toast("Login successful!", {
-                    type: 'success'
-                })
                 if (data.user.role === 'teacher') {
                     router.push('/dashboard/teacher')
                 } else if (data.user.role === 'student') {
@@ -107,15 +86,12 @@ const Login = () => {
                 } else {
                     router.push('/dashboard')
                 }
-
-            }
-
-        } catch (error) {
-            toast(error, {
-                type: 'error'
-            })
-            setLoading(false)
-        }
+            },
+            onError: (error) => {
+                toast(error.message, { type: 'error' })
+                setLoading(false)
+            },
+        });
     }
 
 

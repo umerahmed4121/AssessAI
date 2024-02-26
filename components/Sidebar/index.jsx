@@ -119,7 +119,7 @@ const Sidebar = () => {
                 <div
                   className="hidden md:flex md:justify-center"
                 >
-                  <Image src={session.user.image} width={30} height={30} className='w-10 h-10 rounded-full cursor-pointer' />
+                  <Image src={session.user.image} alt={session.user.name} width={30} height={30} className='w-10 h-10 rounded-full cursor-pointer' />
                 </div>
               )}
 
@@ -131,11 +131,13 @@ const Sidebar = () => {
                   {credentialsSession.picture ? (
                     <Image
                       src={credentialsSession.picture}
+                      alt={credentialsSession.name}
                       width={30} height={30}
                       className='w-10 h-10 rounded-full cursor-pointer' />
                   ) : (
                     <Image
                       src={"/assets/icons/avatar.svg"}
+                      alt={credentialsSession.name}
                       width={30} height={30}
                       className='w-10 h-10 rounded-full cursor-pointer p-1 bg-white' />
                   )}

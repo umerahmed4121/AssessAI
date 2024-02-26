@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 
 import User from '@/models/user';
 import { connectToDB } from "@/utils/database";
+import { cookies } from 'next/headers'
 
 const handler = NextAuth({
     providers: [
@@ -18,7 +19,7 @@ const handler = NextAuth({
     ],
     callbacks: {
         async session({ session }) {
-
+            cookies().delete('token')
             await connectToDB();
             const user = await User.findOne({ email: session.user.email });
             if (user !== null) {
@@ -29,6 +30,7 @@ const handler = NextAuth({
             }
         },
         async signIn({ user, account, profile, email, credentials }) {
+            cookies().delete('token')
             try {
                 console.log({ user, account, profile, email, credentials });
                 await connectToDB();

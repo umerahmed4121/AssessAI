@@ -12,12 +12,13 @@ export const POST = async (req, res) => {
 
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return new Response(JSON.stringify(userExists), {
+            return new Response(JSON.stringify({
+                message: "USER_ALREADY_EXISTS"
+            }), {
                 headers: { "Content-Type": "application/json" },
                 status: 409,
-                body: {
-                    message: "User already exists"
-                }
+                error: "USER ALREADY EXISTS",
+
             });
         }
 

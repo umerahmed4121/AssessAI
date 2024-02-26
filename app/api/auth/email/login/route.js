@@ -8,28 +8,24 @@ import { cookies } from 'next/headers'
 
 export const POST = async (req, res) => {
     const { email, password } = await req.json();
-    
+
 
     try {
         await connectToDB();
         const user = await User.findOne({ email });
-        
+
         if (!user) {
             return new Response(JSON.stringify(user), {
                 headers: { "Content-Type": "application/json" },
                 status: 404,
-                body:{
-                    message: "User not found"
-                }
+                error: "User not found"
             });
         }
-        if(user.provider !== 'email'){
+        if (user.provider !== 'email') {
             return new Response(JSON.stringify(user), {
                 headers: { "Content-Type": "application/json" },
                 status: 404,
-                body:{
-                    message: "User not found"
-                }
+                error: "User not found"
             });
         }
         const match = await verifyPassword(password, user.password);
@@ -41,25 +37,35 @@ export const POST = async (req, res) => {
             });
         }
         // Authentication successful
-        const token = await generateToken({ 
+        const token = await generateToken({
             id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
-            birthday: user.birthday 
+            birthday: user.birthday
         });
-        cookies().set('token',token, {
+        // Delete all cookies
+        const cookiesList = cookies()
+        const hasCookie = cookiesList.has('__Secure-next-auth.session-token')
+        if (hasCookie) {
+            cookiesList.delete('__Secure-next-auth.session-token')
+        }
+        const hasCookieDev = cookiesList.has('next-auth.session-token')
+        if (hasCookieDev) {
+            cookiesList.delete('next-auth.session-token')
+        }
+        cookies().set('token', token, {
             expires: new Date(Date.now() + 60 * 60 * 24 * 1000) // 24 hours
         })
         return new Response(JSON.stringify(
-            { 
+            {
                 token: token,
                 user: {
                     id: user._id,
                     name: user.name,
                     email: user.email,
                     role: user.role,
-                    birthday: user.birthday 
+                    birthday: user.birthday
                 }
             }
         ), {
