@@ -20,16 +20,18 @@ const Dashboard = () => {
         <>
             <Loader visible={true} />
 
-            <div className='w-full hidden sm:grid gap-12 animate-pulse'>
-                {[...Array(5)].map((_, i) => (
-                    <Row key={i} />
-                ))}
-            </div>
+            <div className="dashboard_container">
+                <div className='w-full hidden sm:grid gap-12 animate-pulse'>
+                    {[...Array(5)].map((_, i) => (
+                        <Row key={i} />
+                    ))}
+                </div>
 
-            <div className=' w-full grid sm:hidden gap-12 animate-pulse'>
-                {[...Array(5)].map((_, i) => (
-                    <Row key={i} />
-                ))}
+                <div className=' w-full grid sm:hidden gap-12 animate-pulse'>
+                    {[...Array(5)].map((_, i) => (
+                        <Row key={i} />
+                    ))}
+                </div>
             </div>
 
 

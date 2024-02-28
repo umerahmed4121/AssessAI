@@ -23,6 +23,8 @@ const Sidebar = () => {
   const [loading, setLoading] = useState(false)
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -96,9 +98,9 @@ const Sidebar = () => {
     <div className='fixed top-0 w-full h-[60px]'>
       <Loader visible={loading} />
 
-      <div className="bg-primary-transparent my_blur border-b-4 border-primary-light h-[60px] p-1">
+      <div className="bg-[#6a567791] h-[60px] p-1">
 
-        <motion.nav id='navbar' className="p-1 flex items-center fixed top-0 w-full h-[60px] my_blur">
+        <motion.nav id='navbar' className="p-1 flex items-center fixed top-0 w-full h-[60px] my_blur_2">
 
           {(isMobileMenuOpen || loading) && (
             <div className='absolute top-[60px] left-0 right-0 w-screen h-screen bg-[#00000080] z-10'>
@@ -203,7 +205,7 @@ const Sidebar = () => {
                       transition={{ duration: 0.1, delay: navLinks.length * 0.1, ease: "easeInOut" }}
                       exit={{ opacity: 0, x: -50, transition: { duration: 0.1 } }}
 
-                      whileHover={{ color: '#ff9900' }}
+                      whileHover={{ color: '#ff9900',}}
                       className="text-white text-right text-base py-2 cursor-pointer"
                       onClick={() => {
                         setLoading(true)
@@ -241,7 +243,7 @@ const Sidebar = () => {
             {navLinks.map((link, index) => (
               <li
                 key={link.id}
-                className={`text-white w-full py-2 cursor-pointer ${getPathname(link.href,pathname) ? "bg-secondary rounded-md hover:text-white" : " hover:text-secondary"}`}>
+                className={`text-white w-full py-2 cursor-pointer rounded-md ${getPathname(link.href,pathname) ? "bg-secondary  hover:text-white" : " hover:text-secondary hover:bg-[#ffffff80]"}`}>
                 <Link
                   href={link.href}
                   className={`flex flex-row items-center gap-2 cursor-pointer `}>
@@ -253,8 +255,8 @@ const Sidebar = () => {
               </li>
             ))}
             {navLinks.length !== 0 && (
-              <li>
-                <div className='flex flex-row items-center gap-2 text-white py-4 cursor-pointer hover:text-secondary'
+              <li className="w-full">
+                <div className='w-full flex flex-row items-center gap-2 text-white py-2 cursor-pointer rounded-md hover:text-secondary hover:bg-[#ffffff80] '
                   onClick={() => {
                     setLoading(true)
                     if (session) {

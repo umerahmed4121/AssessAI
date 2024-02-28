@@ -6,18 +6,20 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
+
 const Page = () => {
 
   const router = useRouter()
   const { data: session, status } = useSession()
 
+
   useEffect(() => {
     const getData = async () => {
-      const user  = await getUserFromCookie()
-      if(user){
-        if(user.role === 'student') {
+      const user = await getUserFromCookie()
+      if (user) {
+        if (user.role === 'student') {
           router.push('/dashboard/student')
-        } else if(session?.user?.role === 'teacher') {
+        } else if (session?.user?.role === 'teacher') {
           router.push('/dashboard/teacher')
         } else {
           router.push('/')
@@ -26,29 +28,29 @@ const Page = () => {
     }
     getData()
   }, [])
-  
+
   while (status === 'loading') {
     return (
-      <Dashboard/>
+      <Dashboard />
     )
   }
 
   if (session?.user?.role === null || session?.user?.birthday === null) {
     router.push('/profile/complete')
-  } else if(session?.user?.role === 'student') {
+  } else if (session?.user?.role === 'student') {
     router.push('/dashboard/student')
-  } else if(session?.user?.role === 'teacher') {
+  } else if (session?.user?.role === 'teacher') {
     router.push('/dashboard/teacher')
   } else {
     router.push('/')
   }
-  
+
 
   return (
-    <Dashboard/>
+    <Dashboard />
   )
 
-  
+
 }
 
 export default Page
