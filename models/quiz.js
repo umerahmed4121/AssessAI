@@ -6,19 +6,16 @@ const quizSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: 3
     },
     description: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3
     },
     creator_id: {
         type: String,
         required: true,
         trim: true,
-        minlength: 3
     },
     participants: {
         type: [{
@@ -26,13 +23,11 @@ const quizSchema = new Schema({
                 type: String,
                 required: true,
                 trim: true,
-                minlength: 3
             },
             responseStatus: {
                 type: String,
                 required: true,
                 trim: true,
-                minlength: 2,
                 enum: ["PENDING", "STARTED", "RESPONDED"]
 
             }
@@ -45,13 +40,11 @@ const quizSchema = new Schema({
                 type: String,
                 required: true,
                 trim: true,
-                minlength: 3
             },
             answer: {
                 type: String,
                 required: true,
                 trim: true,
-                minlength: 3
             },
             totalMarks: {
                 type: Number,
@@ -64,7 +57,6 @@ const quizSchema = new Schema({
                         type: String,
                         required: true,
                         trim: true,
-                        minlength: 3
                     },
                     answer: {
                         type: String,

@@ -30,6 +30,7 @@ export const POST = async (req, resp) => {
 
 
     } catch (error) {
+        console.log(error);
         return new Response(JSON.stringify(error), {
             headers: { "Content-Type": "application/json" },
             status: 500,
