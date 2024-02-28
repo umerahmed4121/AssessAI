@@ -76,6 +76,8 @@ const Create = () => {
     onSuccess: () => {
       // Invalidates  cache and refetch
       queryClient.invalidateQueries("quizzes");
+      queryClient.invalidateQueries("studentQuizzes");
+      
     },
   });
 
