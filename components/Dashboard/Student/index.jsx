@@ -4,13 +4,13 @@ import Link from 'next/link'
 const StudentDashboard = () => {
   return (
     <div className='w-full h-screen px-4 sm:pl-[calc(30%+0.75rem)] lg:pl-[calc(20%+1.5rem)] bg-cover bg-[url(/assets/dashboard-bg-mobile.jpg)] md:bg-[url(/assets/dashboard-bg.jpg)]'>
-      <div className="w-full h-screen  pt-[100px] ">
-        <div className="w-full md:w-[400px] my_blur_dashboard bg-[#6a567791] md:bg-transparent p-3">
+      <div className="flex w-full pt-[100px] ">
+        <div className="w-full md:w-[400px] bg-[#6a567791] md:bg-transparent rounded-md p-3">
           <h1 className="text-2xl lg:text-5xl font-bold">Dashboard</h1>
           <div className=" rounded-md my-4 ">
             <p className="text-lg lg:text-2xl">Welcome to your dashboard!</p>
             <p className="text-base lg:text-lg  my-6">Get started by exploring your quizzes here</p>
-            <div className="w-full flex items-center  py-3">
+            <div className="w-full flex items-center py-3">
               <button className="px-4 py-2 text-white lg:text-2xl bg-secondary rounded-md">
                 <Link href="teacher/quizzes">
                   Quizzes
