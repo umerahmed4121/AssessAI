@@ -12,7 +12,7 @@ const StudentDashboard = () => {
             <p className="text-base lg:text-lg  my-6">Get started by exploring your quizzes here</p>
             <div className="w-full flex items-center py-3">
               <button className="px-4 py-2 text-white lg:text-2xl bg-secondary rounded-md">
-                <Link href="teacher/quizzes">
+                <Link href="student/quizzes">
                   Quizzes
                 </Link>
               </button>
