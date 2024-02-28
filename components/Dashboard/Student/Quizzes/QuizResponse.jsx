@@ -168,6 +168,7 @@ const QuizResponse = ({ token }) => {
     const submitResponseMutation = useMutation(submitResponse, {
         onSuccess: () => {
             // Invalidates  cache and refetch
+            queryClient.invalidateQueries("responses");
             queryClient.invalidateQueries("quizzes");
         },
     });

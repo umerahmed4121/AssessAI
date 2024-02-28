@@ -76,7 +76,6 @@ const Responses = ({ quiz_id }) => {
     }
 
     const handleUpdateAssessment = (assessment_id, response_id, value) => {
-        console.log("\n\n---->", assessment_id, response_id, value);
         const updatedAssessments = quiz.assessments.map((assessment, index) => {
             if (assessment._id === assessment_id) {
                 assessment.responses.map((response, index) => {
